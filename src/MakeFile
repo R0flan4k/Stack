@@ -4,7 +4,7 @@ IFLAGS = -Iinclude
 OBJECTS = main.o stack.o vtor.o
 
 all: $(OBJECTS)
-	$(CC) $(OBJECTS) -o StringsSorting
+	$(CC) $(OBJECTS) -o Stack
 
 main.o: main.cpp
 	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
