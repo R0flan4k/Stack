@@ -22,7 +22,8 @@ int main(void)
 
     StackErrors errors = stack_vtor(&stk);
 
-    SHOW_DUMP(&stk, &errors);
+    if(errors.error_code)
+        SHOW_DUMP(stk, errors);
 
     return 0;
 }

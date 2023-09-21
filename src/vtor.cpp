@@ -10,24 +10,40 @@ StackErrors stack_vtor(const Stack * stk)
     StackErrors verificator =         {};
 
     if (stk->size < 0)
+    {
         verificator.invalid_size =         true;
 
+        verificator.error_code |= INVALID_SIZE;
+    }
+
     if (stk->capacity < 0)
+    {
         verificator.invalid_capacity =     true;
 
+        verificator.error_code |= INVALID_CAPACITY;
+    }
+
     if (stk->size >= stk->capacity)
+    {
         verificator.invalid_sizecapacity = true;
 
+        verificator.error_code |= INVALID_SIZECAPACITY;
+    }
+
     if (stk->data == nullptr)
+    {
         verificator.invalid_data =         true;
+
+        verificator.error_code |= INVALID_DATA;
+    }
 
     return verificator;
 }
 
 
-void show_dump(const Stack * stk, const char * stack_name, const StackErrors * verificator)
+void show_dump(const Stack * stk, const char * stack_name, const StackErrors * verificator, const char * func, const int line, const char * file)
 {
-    printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, __FILE__, __LINE__, __func__);
+    printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
     printf("{\n");
     printf("    size =     %d\n", stk->size);
     printf("    capacity = %d\n", stk->capacity);
