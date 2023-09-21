@@ -20,11 +20,9 @@ int main(void)
 //
 //     stk.data = data1;
 
-    StackErrors errors = {};
+    StackErrors errors = stack_vtor(&stk);
 
-    errors = stack_vtor(&stk);
-
-    printf("%d\n%d\n%d\n%d\n", errors.invalid_size, errors.invalid_capacity, errors.invalid_sizecapacity, errors.invalid_data);
+    SHOW_DUMP(&stk, &errors);
 
     return 0;
 }
