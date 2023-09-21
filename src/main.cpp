@@ -6,24 +6,27 @@
 
 int main(void)
 {
-    Stack stk = {.size =     -1,
+    Stack stk = {.size =     1,
                  .capacity = -100,
                  .data =     nullptr};
 
-//     Elem_t * data1 = NULL;
-//
-//     if ((data1 = (Elem_t *) calloc(stk.capacity, sizeof(Elem_t))) == NULL)
-//     {
-//         printf("Can't allocate a memory\n");
-//         return 1;
-//     }
-//
-//     stk.data = data1;
+    Elem_t * data1 = NULL;
+
+    if ((data1 = (Elem_t *) calloc(START_CAPACITY, sizeof(Elem_t))) == NULL)
+    {
+        printf("Can't allocate a memory\n");
+        return 1;
+    }
+
+    stk.data = data1;
+    stk.data[0] = 3;
 
     StackErrors errors = stack_vtor(&stk);
 
     if(errors.error_code)
         SHOW_DUMP(stk, errors);
+
+    free(data1);
 
     return 0;
 }

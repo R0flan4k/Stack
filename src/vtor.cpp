@@ -54,7 +54,9 @@ void show_dump(const Stack * stk, const char * stack_name, const StackErrors * v
 
     while (i < stk->size)
     {
-        printf("        [%d] = " ELEM_SPEC, i, stk->data[i]);
+        printf("        [%d] = " ELEM_SPEC "\n", i, stk->data[i]);
+
+        i++;
     }
 
     printf("    }\n");
