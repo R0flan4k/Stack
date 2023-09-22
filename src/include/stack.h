@@ -1,10 +1,10 @@
 #ifndef STACK_H
     #define STACK_H
 
-    typedef int Elem_t;
+    typedef double Elem_t;
     typedef int Error_t;
 
-    #define ELEM_SPEC "%d"
+    #define ELEM_SPEC "%lf"
     #define STACK_CTOR(stk, errors)         if ((*(errors) = stack_ctor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \

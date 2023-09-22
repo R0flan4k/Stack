@@ -52,7 +52,7 @@ void show_dump(const Stack * stk, const char * stack_name, const StackErrors * v
 
     int i = 1;
 
-    while (i <= stk->size)
+    while (i <= stk->size && stk->data != nullptr)
     {
         printf("        [%d] = " ELEM_SPEC "\n", i, stk->data[i]);
 

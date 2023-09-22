@@ -4,6 +4,7 @@
 #include "stack.h"
 #include "vtor.h"
 
+
 int main(void)
 {
     Stack stk = {};
@@ -12,11 +13,11 @@ int main(void)
 
     STACK_CTOR(&stk, &errors);
 
-    STACK_PUSH(&stk, 10, &errors);
+    STACK_PUSH(&stk, 10.2, &errors);
 
     SHOW_DUMP(&stk, &errors);
 
-    STACK_PUSH(&stk, 101, &errors);
+    STACK_PUSH(&stk, 101.7, &errors);
 
     SHOW_DUMP(&stk, &errors);
 
@@ -35,6 +36,8 @@ int main(void)
     printf(ELEM_SPEC "\n", value);
 
     STACK_DTOR(&stk, &errors);
+
+    SHOW_DUMP(&stk, &errors);
 
     return 0;
 }

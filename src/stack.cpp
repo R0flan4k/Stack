@@ -5,6 +5,7 @@
 #include "vtor.h"
 #include "my_assert.h"
 
+
 StackErrors stack_ctor(Stack * stk)
 {
     stk->size = 0;
