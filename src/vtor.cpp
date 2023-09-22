@@ -13,28 +13,28 @@ StackErrors stack_vtor(const Stack * stk)
     {
         verificator.invalid_size =         true;
 
-        verificator.error_code |= INVALID_SIZE;
+        verificator.error_code |= STACKERRORS_INVALID_SIZE;
     }
 
     if (stk->capacity < 0)
     {
         verificator.invalid_capacity =     true;
 
-        verificator.error_code |= INVALID_CAPACITY;
+        verificator.error_code |= STACKERRORS_INVALID_CAPACITY;
     }
 
     if (stk->size >= stk->capacity)
     {
         verificator.invalid_sizecapacity = true;
 
-        verificator.error_code |= INVALID_SIZECAPACITY;
+        verificator.error_code |= STACKERRORS_INVALID_SIZECAPACITY;
     }
 
     if (stk->data == nullptr)
     {
         verificator.invalid_data =         true;
 
-        verificator.error_code |= INVALID_DATA;
+        verificator.error_code |= STACKERRORS_INVALID_DATA;
     }
 
     return verificator;
@@ -50,9 +50,9 @@ void show_dump(const Stack * stk, const char * stack_name, const StackErrors * v
     printf("    data[%p]\n", stk->data);
     printf("    {\n");
 
-    int i = 0;
+    int i = 1;
 
-    while (i < stk->size)
+    while (i <= stk->size)
     {
         printf("        [%d] = " ELEM_SPEC "\n", i, stk->data[i]);
 
@@ -61,7 +61,9 @@ void show_dump(const Stack * stk, const char * stack_name, const StackErrors * v
 
     printf("    }\n");
     printf("}\n");
-    printf("Errors:\n");
+
+    if (verificator->error_code)
+        printf("Errors:\n");
 
     if (verificator->invalid_size)
         printf(RED_COLOR "invlid size\n" DEFAULT_COLOR);

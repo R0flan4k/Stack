@@ -10,13 +10,31 @@ int main(void)
 
     StackErrors errors = {};
 
-    if ((errors = stack_ctor(&stk)).error_code)
-        SHOW_DUMP(&stk, &errors);
+    STACK_CTOR(&stk, &errors);
 
-    free(stk.data);
-    stk.data = nullptr;
+    STACK_PUSH(&stk, 10, &errors);
 
-    printf("%p", stk.data);
+    SHOW_DUMP(&stk, &errors);
+
+    STACK_PUSH(&stk, 101, &errors);
+
+    SHOW_DUMP(&stk, &errors);
+
+    Elem_t value = 0;
+
+    STACK_POP(&stk, &value, &errors);
+
+    SHOW_DUMP(&stk, &errors);
+
+    printf(ELEM_SPEC "\n", value);
+
+    STACK_POP(&stk, &value, &errors);
+
+    SHOW_DUMP(&stk, &errors);
+
+    printf(ELEM_SPEC "\n", value);
+
+    STACK_DTOR(&stk, &errors);
 
     return 0;
 }
