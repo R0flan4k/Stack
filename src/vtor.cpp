@@ -19,9 +19,10 @@ const char * OUTPUT_ERRORS[] = {
     "spoiled right canary\n"
 };
 
-StackErrors stack_vtor(const Stack * stk)
+
+AllStackErrors stack_vtor(const Stack * stk)
 {
-    StackErrors verificator = {
+    AllStackErrors verificator = {
         .invalid_size =           {.expression = (stk->size < 0),                         .mask = STACKERRORS_INVALID_SIZE},
         .invalid_capacity =       {.expression = (stk->capacity < 0),                     .mask = STACKERRORS_INVALID_CAPACITY},
         .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),            .mask = STACKERRORS_INVALID_SIZECAPACITY},
@@ -49,7 +50,7 @@ StackErrors stack_vtor(const Stack * stk)
 }
 
 
-void show_dump(const Stack * stk, const char * stack_name, const StackErrors * verificator, const char * func, const int line, const char * file)
+void show_dump(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file)
 {
     printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
     printf("{\n");

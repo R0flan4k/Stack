@@ -9,7 +9,7 @@ int main(void)
 {
     Stack stk = {};
 
-    StackErrors errors = {};
+    AllStackErrors errors = {};
 
     STACK_CTOR(&stk, &errors);
 
@@ -41,3 +41,8 @@ int main(void)
 
     return 0;
 }
+
+
+// TASKS: #ifndef NCANARYPROTECT
+//        HASH
+//        #ifndef NHASHPROTECT

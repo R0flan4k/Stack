@@ -48,7 +48,7 @@
         StackErrorsMasks mask;
     };
 
-    struct StackErrors {
+    struct AllStackErrors {
         Error_t error_code;
 
         StackError invalid_size;
@@ -77,10 +77,10 @@
     Elem_t * const POISON_PTR = NULL;
     const Jagajaga_t JAGAJAGA_VALUE = 0xAB00B1E;
 
-    StackErrors stack_ctor(Stack * stk);
-    StackErrors stack_dtor(Stack * stk);
-    StackErrors stack_push(Stack * stk, const Elem_t value);
-    StackErrors stack_pop (Stack * stl, Elem_t * value);
+    AllStackErrors stack_ctor(Stack * stk);
+    AllStackErrors stack_dtor(Stack * stk);
+    AllStackErrors stack_push(Stack * stk, const Elem_t value);
+    AllStackErrors stack_pop (Stack * stl, Elem_t * value);
     int expand_memory(Stack * stk);
     int constrict_memory(Stack * stk);
 

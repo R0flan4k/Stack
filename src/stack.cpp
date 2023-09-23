@@ -6,7 +6,7 @@
 #include "my_assert.h"
 
 
-StackErrors stack_ctor(Stack * stk)
+AllStackErrors stack_ctor(Stack * stk)
 {
     stk->size = 0;
     stk->capacity = START_CAPACITY;
@@ -14,7 +14,7 @@ StackErrors stack_ctor(Stack * stk)
     stk->right_jagajaga = JAGAJAGA_VALUE;
 
     Elem_t * data = NULL;
-    StackErrors errors = {};
+    AllStackErrors errors = {};
 
     if ((data = (Elem_t *) calloc(START_CAPACITY * sizeof(Elem_t) + 2 * sizeof(Jagajaga_t), sizeof(char))) == NULL)
     {
@@ -39,9 +39,9 @@ StackErrors stack_ctor(Stack * stk)
 }
 
 
-StackErrors stack_dtor(Stack * stk)
+AllStackErrors stack_dtor(Stack * stk)
 {
-    StackErrors errors = {};
+    AllStackErrors errors = {};
 
     if (stk->data == nullptr && stk->capacity == POISON && stk->size == POISON)
     {
@@ -61,9 +61,9 @@ StackErrors stack_dtor(Stack * stk)
 }
 
 
-StackErrors stack_push(Stack * stk, const Elem_t value)
+AllStackErrors stack_push(Stack * stk, const Elem_t value)
 {
-    StackErrors errors = stack_vtor(stk);
+    AllStackErrors errors = stack_vtor(stk);
 
     if (errors.error_code)
     {
@@ -93,9 +93,9 @@ StackErrors stack_push(Stack * stk, const Elem_t value)
 }
 
 
-StackErrors stack_pop(Stack * stk, Elem_t * value)
+AllStackErrors stack_pop(Stack * stk, Elem_t * value)
 {
-    StackErrors errors = stack_vtor(stk);
+    AllStackErrors errors = stack_vtor(stk);
 
     if (errors.error_code)
     {
