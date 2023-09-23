@@ -3,6 +3,7 @@
 
     typedef double Elem_t;
     typedef int Error_t;
+    typedef long long Jagajaga_t;
 
     #define ELEM_SPEC "%lf"
     #define STACK_CTOR(stk, errors)         if ((*(errors) = stack_ctor(stk)).error_code)             \
@@ -29,15 +30,17 @@
                                                 return (*(errors)).error_code;                        \
                                             }                                                         \
 
-    enum Errors {
-        STACKERRORS_INVALID_SIZE =         1 << 0,
-        STACKERRORS_INVALID_CAPACITY =     1 << 1,
-        STACKERRORS_INVALID_SIZECAPACITY = 1 << 2,
-        STACKERRORS_INVALID_DATA =         1 << 3,
-        STACKERRORS_CANT_ALLOCATE_MEMORY = 1 << 4,
-        STACKERRORS_CANT_DESTRUCT =        1 << 5,
-        STACKERRORS_CANT_CONSTRICT =       1 << 6,
-        STACKERRORS_EMPTY_STACK =          1 << 7
+    enum StackErrorsMasks {
+        STACKERRORS_INVALID_SIZE =           1 << 0,
+        STACKERRORS_INVALID_CAPACITY =       1 << 1,
+        STACKERRORS_INVALID_SIZECAPACITY =   1 << 2,
+        STACKERRORS_INVALID_DATA =           1 << 3,
+        STACKERRORS_CANT_ALLOCATE_MEMORY =   1 << 4,
+        STACKERRORS_CANT_DESTRUCT =          1 << 5,
+        STACKERRORS_CANT_CONSTRICT =         1 << 6,
+        STACKERRORS_EMPTY_STACK =            1 << 7,
+        STACKERRORS_SPOILED_LEFT_JAGAJAGA =  1 << 8,
+        STACKERRORS_SPOILED_RIGHT_JAGAJAGA = 1 << 9
     };
 
     struct StackErrors {
@@ -51,18 +54,23 @@
         bool cant_destruct;
         bool cant_constrict;
         bool empty_stack;
+        bool spoiled_left_jagajaga;
+        bool spoiled_right_jagajaga;
     };
 
     struct Stack {
+        Jagajaga_t left_jagajaga;
         int size;
         int capacity;
         Elem_t * data;
+        Jagajaga_t right_jagajaga;
     };
 
     const int START_CAPACITY = 16;
-    const int POISON = 2147483647; // hexspeak
+    const int POISON = 0x5051EB10; // hexspeak
     const int EXPAND_COEFFICIENT = 2;
     Elem_t * const POISON_PTR = NULL;
+    const Jagajaga_t JAGAJAGA_VALUE = 0xAB00B1E;
 
     StackErrors stack_ctor(Stack * stk);
     StackErrors stack_dtor(Stack * stk);

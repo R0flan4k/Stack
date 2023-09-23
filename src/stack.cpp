@@ -10,23 +10,29 @@ StackErrors stack_ctor(Stack * stk)
 {
     stk->size = 0;
     stk->capacity = START_CAPACITY;
+    stk->left_jagajaga = JAGAJAGA_VALUE;
+    stk->right_jagajaga = JAGAJAGA_VALUE;
 
     Elem_t * data = NULL;
+    StackErrors errors = {};
 
-    if ((data = (Elem_t *) calloc(START_CAPACITY, sizeof(Elem_t))) == NULL)
+    if ((data = (Elem_t *) calloc(START_CAPACITY * sizeof(Elem_t) + 2 * sizeof(Jagajaga_t), sizeof(char))) == NULL)
     {
-        printf("Can't allocate a memory.\n");
-
         stk->data = nullptr;
+
+        errors.cant_allocate_memory = true;
+        errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
+
+        return errors;
     }
 
-    stk->data = data;
+    stk->data = (Elem_t *) ((Jagajaga_t *) data + 1);
 
-    StackErrors errors = stack_vtor(stk);
+    errors = stack_vtor(stk);
 
     if(errors.error_code)
     {
-        SHOW_DUMP(stk, &errors);
+        return errors;
     }
 
     return errors;
@@ -47,7 +53,7 @@ StackErrors stack_dtor(Stack * stk)
         stk->capacity = POISON;
         stk->size =     POISON;
 
-        free(stk->data);
+        free((Jagajaga_t *) stk->data - 1);
         stk->data = nullptr;
     }
 
@@ -74,8 +80,6 @@ StackErrors stack_push(Stack * stk, const Elem_t value)
 
         if (expand_memory(stk))
         {
-            printf("Failure allocate a memory\n");
-
             errors.cant_allocate_memory = true;
             errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
 
@@ -112,8 +116,6 @@ StackErrors stack_pop(Stack * stk, Elem_t * value)
 
             if (constrict_memory(stk))
             {
-                printf("Failure constrict the array.\n");
-
                 errors.cant_constrict = true;
                 errors.error_code |= STACKERRORS_CANT_CONSTRICT;
 
@@ -123,8 +125,6 @@ StackErrors stack_pop(Stack * stk, Elem_t * value)
     }
     else
     {
-        printf("Can't pop an empty stack.");
-
         errors.empty_stack = true;
         errors.error_code |= STACKERRORS_EMPTY_STACK;
     }
@@ -137,10 +137,10 @@ int expand_memory(Stack * stk)
 {
     Elem_t * pointer = NULL;
 
-    if ((pointer = (Elem_t *) realloc(stk->data, stk->capacity * EXPAND_COEFFICIENT)) == NULL)
+    if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) * EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
         return 1;
 
-    stk->data = pointer;
+    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity *= EXPAND_COEFFICIENT;
 
     return 0;
@@ -151,10 +151,10 @@ int constrict_memory(Stack * stk)
 {
     Elem_t * pointer = NULL;
 
-    if ((pointer = (Elem_t *) realloc(stk->data, stk->capacity / EXPAND_COEFFICIENT)) == NULL)
+    if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) / EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
         return 1;
 
-    stk->data = pointer;
+    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity /= EXPAND_COEFFICIENT;
 
     return 0;
