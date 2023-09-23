@@ -20,7 +20,7 @@ StackErrors stack_ctor(Stack * stk)
     {
         stk->data = nullptr;
 
-        errors.cant_allocate_memory = true;
+        errors.cant_allocate_memory.expression = true;
         errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
 
         return errors;
@@ -45,7 +45,7 @@ StackErrors stack_dtor(Stack * stk)
 
     if (stk->data == nullptr && stk->capacity == POISON && stk->size == POISON)
     {
-        errors.cant_destruct = true;
+        errors.cant_destruct.expression = true;
         errors.error_code |= STACKERRORS_CANT_DESTRUCT;
     }
     else
@@ -80,7 +80,7 @@ StackErrors stack_push(Stack * stk, const Elem_t value)
 
         if (expand_memory(stk))
         {
-            errors.cant_allocate_memory = true;
+            errors.cant_allocate_memory.expression = true;
             errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
 
             return errors;
@@ -116,7 +116,7 @@ StackErrors stack_pop(Stack * stk, Elem_t * value)
 
             if (constrict_memory(stk))
             {
-                errors.cant_constrict = true;
+                errors.cant_constrict.expression = true;
                 errors.error_code |= STACKERRORS_CANT_CONSTRICT;
 
                 return errors;
@@ -125,7 +125,7 @@ StackErrors stack_pop(Stack * stk, Elem_t * value)
     }
     else
     {
-        errors.empty_stack = true;
+        errors.empty_stack.expression = true;
         errors.error_code |= STACKERRORS_EMPTY_STACK;
     }
 

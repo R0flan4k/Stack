@@ -43,19 +43,24 @@
         STACKERRORS_SPOILED_RIGHT_JAGAJAGA = 1 << 9
     };
 
+    struct StackError {
+        bool expression;
+        StackErrorsMasks mask;
+    };
+
     struct StackErrors {
         Error_t error_code;
 
-        bool invalid_size;
-        bool invalid_capacity;
-        bool invalid_sizecapacity;
-        bool invalid_data;
-        bool cant_allocate_memory;
-        bool cant_destruct;
-        bool cant_constrict;
-        bool empty_stack;
-        bool spoiled_left_jagajaga;
-        bool spoiled_right_jagajaga;
+        StackError invalid_size;
+        StackError invalid_capacity;
+        StackError invalid_sizecapacity;
+        StackError invalid_data;
+        StackError cant_allocate_memory;
+        StackError cant_destruct;
+        StackError cant_constrict;
+        StackError empty_stack;
+        StackError spoiled_left_jagajaga;
+        StackError spoiled_right_jagajaga;
     };
 
     struct Stack {

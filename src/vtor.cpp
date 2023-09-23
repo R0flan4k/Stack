@@ -3,6 +3,7 @@
 
 #include "stack.h"
 #include "vtor.h"
+#include "my_assert.h"
 
 
 const char * OUTPUT_ERRORS[] = {
@@ -20,48 +21,28 @@ const char * OUTPUT_ERRORS[] = {
 
 StackErrors stack_vtor(const Stack * stk)
 {
-    StackErrors verificator = {};
+    StackErrors verificator = {
+        .invalid_size =           {.expression = (stk->size < 0),                         .mask = STACKERRORS_INVALID_SIZE},
+        .invalid_capacity =       {.expression = (stk->capacity < 0),                     .mask = STACKERRORS_INVALID_CAPACITY},
+        .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),            .mask = STACKERRORS_INVALID_SIZECAPACITY},
+        .invalid_data =           {.expression = (stk->data == nullptr),                  .mask = STACKERRORS_INVALID_DATA},
+        .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != JAGAJAGA_VALUE),  .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
+        .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != JAGAJAGA_VALUE), .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA}
+    };
 
-    if (stk->size < 0)
+    StackError * stack_errors[] = {&(verificator.invalid_size),          &(verificator.invalid_capacity),
+                                   &(verificator.invalid_sizecapacity),  &(verificator.invalid_data),
+                                   &(verificator.spoiled_left_jagajaga), &(verificator.spoiled_right_jagajaga)};
+
+    size_t array_size = sizeof(stack_errors) / sizeof(stack_errors[0]);
+    size_t i = 0;
+
+    while (i < array_size)
     {
-        verificator.invalid_size =            true;
+        if (stack_errors[i]->expression)
+            verificator.error_code |= stack_errors[i]->mask;
 
-        verificator.error_code |= STACKERRORS_INVALID_SIZE;
-    }
-
-    if (stk->capacity < 0)
-    {
-        verificator.invalid_capacity =        true;
-
-        verificator.error_code |= STACKERRORS_INVALID_CAPACITY;
-    }
-
-    if (stk->size >= stk->capacity)
-    {
-        verificator.invalid_sizecapacity =    true;
-
-        verificator.error_code |= STACKERRORS_INVALID_SIZECAPACITY;
-    }
-
-    if (stk->data == nullptr)
-    {
-        verificator.invalid_data =            true;
-
-        verificator.error_code |= STACKERRORS_INVALID_DATA;
-    }
-
-    if (stk->left_jagajaga != JAGAJAGA_VALUE)
-    {
-        verificator.spoiled_left_jagajaga =   true;
-
-        verificator.error_code |= STACKERRORS_SPOILED_LEFT_JAGAJAGA;
-    }
-
-    if (stk->right_jagajaga != JAGAJAGA_VALUE)
-    {
-        verificator.spoiled_right_jagajaga =   true;
-
-        verificator.error_code |= STACKERRORS_SPOILED_RIGHT_JAGAJAGA;
+        i++;
     }
 
     return verificator;
@@ -91,21 +72,22 @@ void show_dump(const Stack * stk, const char * stack_name, const StackErrors * v
 
     if (verificator->error_code)
     {
-    bool errors[] = {verificator->invalid_size,          verificator->invalid_capacity,
-                     verificator->invalid_sizecapacity,  verificator->invalid_data,
-                     verificator->cant_allocate_memory,  verificator->cant_destruct,
-                     verificator->cant_constrict,        verificator->empty_stack,
-                     verificator->spoiled_left_jagajaga, verificator->spoiled_right_jagajaga};
+    StackError const * errors[] = {&(verificator->invalid_size),          &(verificator->invalid_capacity),
+                                   &(verificator->invalid_sizecapacity),  &(verificator->invalid_data),
+                                   &(verificator->cant_allocate_memory),  &(verificator->cant_destruct),
+                                   &(verificator->cant_constrict),        &(verificator->empty_stack),
+                                   &(verificator->spoiled_left_jagajaga), &(verificator->spoiled_right_jagajaga)};
 
         printf("Errors:\n");
 
         size_t array_size = sizeof(errors) / sizeof(errors[0]);
-
         size_t j = 0;
+
+        MY_ASSERT(array_size == sizeof(OUTPUT_ERRORS) / sizeof(OUTPUT_ERRORS[0]));
 
         while (j < array_size)
         {
-            if (errors[j])
+            if (errors[j]->expression)
                 printf(RED_COLOR "%s" DEFAULT_COLOR, OUTPUT_ERRORS[j]);
 
             j++;
