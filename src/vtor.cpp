@@ -52,11 +52,12 @@ AllStackErrors stack_vtor(const Stack * stk)
 
 void show_dump(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file)
 {
+    printf("-------------------------------------------------------------------\n");
     printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
     printf("{\n");
-    printf("    size =     %d\n", stk->size);
-    printf("    capacity = %d\n", stk->capacity);
-    printf("    data[%p]\n", stk->data);
+    printf("    size =     %d%s\n", stk->size,     stk->size == POISON     ? " (POISON)" : "");
+    printf("    capacity = %d%s\n", stk->capacity, stk->capacity == POISON ? " (POISON)" : "");
+    printf("    data[%p%s]\n", stk->data,          stk->data == POISON_PTR ? "(POISON)"  : "");
     printf("    {\n");
 
     int i = 1;
@@ -94,4 +95,6 @@ void show_dump(const Stack * stk, const char * stack_name, const AllStackErrors 
             j++;
         }
     }
+
+    printf("-------------------------------------------------------------------\n");
 }

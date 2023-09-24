@@ -37,12 +37,14 @@ int main(void)
 
     STACK_DTOR(&stk, &errors);
 
+    errors = stack_vtor(&stk);
+
     SHOW_DUMP(&stk, &errors);
 
     return 0;
 }
 
 
-// TASKS: #ifndef NCANARYPROTECT
+// TASKS: -DNCANARYPROTECT
 //        HASH
-//        #ifndef NHASHPROTECT
+//        -DNHASHPROTECT
