@@ -3,31 +3,25 @@
 
 #include "stack.h"
 #include "vtor.h"
+#include "cmd_input.h"
 
 
-int main(void)
+int main(int argc, char * argv[])
 {
+    if (!check_cmd_input(argc, argv))
+        return 1;
+
     Stack stk = {};
 
     AllStackErrors errors = {};
 
     STACK_CTOR(&stk, &errors);
 
-    STACK_PUSH(&stk, 10.2, &errors);
-
-    SHOW_DUMP(&stk, &errors);
-
-    STACK_PUSH(&stk, 101.7, &errors);
+    STACK_PUSH(&stk, PUSH_NUMBER, &errors);
 
     SHOW_DUMP(&stk, &errors);
 
     Elem_t value = 0;
-
-    STACK_POP(&stk, &value, &errors);
-
-    SHOW_DUMP(&stk, &errors);
-
-    printf(ELEM_SPEC "\n", value);
 
     STACK_POP(&stk, &value, &errors);
 

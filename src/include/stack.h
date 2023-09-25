@@ -11,25 +11,25 @@
     #define STACK_CTOR(stk, errors)         if ((*(errors) = stack_ctor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                return (*(errors)).error_code;                        \
+                                                /* return (*(errors)).error_code; */                  \
                                             }                                                         \
 
     #define STACK_DTOR(stk, errors)         if ((*(errors) = stack_dtor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                return (*(errors)).error_code;                        \
+                                                /* return (*(errors)).error_code; */                  \
                                             }                                                         \
 
     #define STACK_PUSH(stk, value, errors)  if ((*(errors) = stack_push((stk), (value))).error_code)  \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                return (*(errors)).error_code;                        \
+                                                /* return (*(errors)).error_code; */                  \
                                             }                                                         \
 
     #define STACK_POP(stk, value, errors)   if ((*(errors) = stack_pop((stk), (value))).error_code)   \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                return (*(errors)).error_code;                        \
+                                                /* return (*(errors)).error_code; */                  \
                                             }                                                         \
 
     enum StackErrorsMasks {
