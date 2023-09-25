@@ -8,7 +8,7 @@
 
 Elem_t PUSH_NUMBER = 10.2;
 
-const char * FILE_NAME = NULL;
+FILE * INPUT_FILE = stdin;
 static char * * cmd_input = NULL;
 
 CmdLineArg STACK_PUSH = {

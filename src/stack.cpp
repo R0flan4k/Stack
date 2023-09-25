@@ -114,9 +114,9 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         stk->data[stk->size] = POISON;
         (stk->size)--;
 
-        if (stk->size <= stk->capacity / EXPAND_COEFFICIENT && stk->capacity > START_CAPACITY)
+        if (stk->size <= stk->capacity / CONSTRICT_COEFFICIENT && stk->capacity > START_CAPACITY)
         {
-            MY_ASSERT(stk->size == stk->capacity / EXPAND_COEFFICIENT);
+            MY_ASSERT(stk->size == stk->capacity / CONSTRICT_COEFFICIENT);
 
             if (constrict_memory(stk))
             {
@@ -133,7 +133,7 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         errors.error_code |= STACKERRORS_EMPTY_STACK;
     }
 
-    HASH_VALUE = stk->hash;
+    HASH_VALUE = calculate_hash(stk);
 
     return errors;
 }

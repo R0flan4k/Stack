@@ -14,6 +14,7 @@
     extern CmdLineArg STACK_PUSH;
 
     extern Elem_t PUSH_NUMBER;
+    extern FILE * INPUT_FILE;
 
     bool check_cmd_input(int argc, char * * argv);
     void set_flag_stack_push(void);

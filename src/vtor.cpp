@@ -50,6 +50,8 @@ AllStackErrors stack_vtor(const Stack * stk)
         i++;
     }
 
+    // HASH_VALUE = stk->hash;
+
     return verificator;
 }
 

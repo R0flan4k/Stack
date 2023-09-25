@@ -11,25 +11,33 @@
     #define STACK_CTOR(stk, errors)         if ((*(errors) = stack_ctor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                /* return (*(errors)).error_code; */                  \
+                                                return (*(errors)).error_code;                        \
+                                            }                                                         \
+                                            else                                                      \
+                                            {                                                         \
+                                                printf("The stack successfully created.\n");          \
                                             }                                                         \
 
     #define STACK_DTOR(stk, errors)         if ((*(errors) = stack_dtor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                /* return (*(errors)).error_code; */                  \
+                                                return (*(errors)).error_code;                        \
+                                            }                                                         \
+                                            else                                                      \
+                                            {                                                         \
+                                                printf("The stack successfully destructed.\n");       \
                                             }                                                         \
 
     #define STACK_PUSH(stk, value, errors)  if ((*(errors) = stack_push((stk), (value))).error_code)  \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                /* return (*(errors)).error_code; */                  \
+                                                return (*(errors)).error_code;                        \
                                             }                                                         \
 
     #define STACK_POP(stk, value, errors)   if ((*(errors) = stack_pop((stk), (value))).error_code)   \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
-                                                /* return (*(errors)).error_code; */                  \
+                                                return (*(errors)).error_code;                        \
                                             }                                                         \
 
     enum StackErrorsMasks {
@@ -79,6 +87,7 @@
     const int START_CAPACITY = 16;
     const int POISON = 0x5051EB10; // hexspeak
     const int EXPAND_COEFFICIENT = 2;
+    const int CONSTRICT_COEFFICIENT = 4;
     Elem_t * const POISON_PTR = NULL;
     const Jagajaga_t JAGAJAGA_VALUE = 0xAB00B1E;
 
