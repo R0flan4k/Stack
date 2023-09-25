@@ -4,8 +4,10 @@
     typedef double Elem_t;
     typedef int Error_t;
     typedef long long Jagajaga_t;
+    typedef long long Hash_t;
 
     #define ELEM_SPEC "%lf"
+
     #define STACK_CTOR(stk, errors)         if ((*(errors) = stack_ctor(stk)).error_code)             \
                                             {                                                         \
                                                 SHOW_DUMP((stk), (errors));                           \
@@ -40,7 +42,8 @@
         STACKERRORS_CANT_CONSTRICT =         1 << 6,
         STACKERRORS_EMPTY_STACK =            1 << 7,
         STACKERRORS_SPOILED_LEFT_JAGAJAGA =  1 << 8,
-        STACKERRORS_SPOILED_RIGHT_JAGAJAGA = 1 << 9
+        STACKERRORS_SPOILED_RIGHT_JAGAJAGA = 1 << 9,
+        STACKERRORS_SPOILED_HASH_VALUE =     1 << 10
     };
 
     struct StackError {
@@ -61,6 +64,7 @@
         StackError empty_stack;
         StackError spoiled_left_jagajaga;
         StackError spoiled_right_jagajaga;
+        StackError spoiled_hash_value;
     };
 
     struct Stack {
@@ -68,6 +72,7 @@
         int size;
         int capacity;
         Elem_t * data;
+        Hash_t hash;
         Jagajaga_t right_jagajaga;
     };
 
@@ -85,3 +90,5 @@
     int constrict_memory(Stack * stk);
 
 #endif // STACK_H
+
+// prishel za minutu do konca pari xD
