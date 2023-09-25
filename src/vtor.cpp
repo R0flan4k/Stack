@@ -33,12 +33,13 @@ AllStackErrors stack_vtor(Stack * stk)
         .invalid_data =           {.expression = (stk->data == nullptr),                  .mask = STACKERRORS_INVALID_DATA},
         .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != JAGAJAGA_VALUE),  .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
         .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != JAGAJAGA_VALUE), .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA},
-        .spoiled_hash_value =     {.expression = (stk->hash != HASH_VALUE),                    .mask = STACKERRORS_SPOILED_HASH_VALUE}
+        .spoiled_hash_value =     {.expression = (stk->hash != HASH_VALUE),               .mask = STACKERRORS_SPOILED_HASH_VALUE}
     };
 
     StackError * stack_errors[] = {&(verificator.invalid_size),          &(verificator.invalid_capacity),
                                    &(verificator.invalid_sizecapacity),  &(verificator.invalid_data),
-                                   &(verificator.spoiled_left_jagajaga), &(verificator.spoiled_right_jagajaga)};
+                                   &(verificator.spoiled_left_jagajaga), &(verificator.spoiled_right_jagajaga),
+                                   &(verificator.spoiled_hash_value)};
 
     size_t array_size = sizeof(stack_errors) / sizeof(stack_errors[0]);
     size_t i = 0;
