@@ -65,6 +65,7 @@ AllStackErrors stack_dtor(Stack * stk)
 
 AllStackErrors stack_push(Stack * stk, const Elem_t value)
 {
+    stk->hash = calculate_hash(stk);
     AllStackErrors errors = stack_vtor(stk);
 
     if (errors.error_code)
@@ -91,7 +92,7 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
 
     stk->data[stk->size] = value;
 
-    HASH_VALUE = stk->hash;
+    HASH_VALUE = calculate_hash(stk);
 
     return errors;
 }
@@ -99,12 +100,11 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
 
 AllStackErrors stack_pop(Stack * stk, Elem_t * value)
 {
+    stk->hash = calculate_hash(stk);
     AllStackErrors errors = stack_vtor(stk);
 
     if (errors.error_code)
     {
-        SHOW_DUMP(stk, &errors);
-
         return errors;
     }
 

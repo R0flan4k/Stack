@@ -22,10 +22,8 @@ const char * OUTPUT_ERRORS[] = {
 };
 
 
-AllStackErrors stack_vtor(Stack * stk)
+AllStackErrors stack_vtor(const Stack * stk)
 {
-    stk->hash = calculate_hash(stk);
-
     AllStackErrors verificator = {
         .invalid_size =           {.expression = (stk->size < 0),                         .mask = STACKERRORS_INVALID_SIZE},
         .invalid_capacity =       {.expression = (stk->capacity < 0),                     .mask = STACKERRORS_INVALID_CAPACITY},
