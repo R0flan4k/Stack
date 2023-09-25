@@ -28,6 +28,7 @@ AllStackErrors stack_ctor(Stack * stk)
 
     stk->data = (Elem_t *) ((Jagajaga_t *) data + 1);
 
+    HASH_VALUE = calculate_hash(stk);
     errors = stack_vtor(stk);
 
     if(errors.error_code)
@@ -52,6 +53,7 @@ AllStackErrors stack_dtor(Stack * stk)
     {
         stk->capacity = POISON;
         stk->size =     POISON;
+        stk->hash =     POISON;
 
         free((Jagajaga_t *) stk->data - 1);
         stk->data = nullptr;
@@ -88,6 +90,8 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
     }
 
     stk->data[stk->size] = value;
+
+    HASH_VALUE = stk->hash;
 
     return errors;
 }
@@ -128,6 +132,8 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         errors.empty_stack.expression = true;
         errors.error_code |= STACKERRORS_EMPTY_STACK;
     }
+
+    HASH_VALUE = stk->hash;
 
     return errors;
 }

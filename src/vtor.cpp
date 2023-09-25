@@ -4,34 +4,36 @@
 #include "stack.h"
 #include "vtor.h"
 #include "my_assert.h"
-#include "hash.h"
 
+Hash_t HASH_VALUE = 0;
 
 const char * OUTPUT_ERRORS[] = {
-    "invlid size\n",
-    "invalid capacity\n",
-    "capacity less than size\n",
-    "data is nullptr\n",
-    "can't allocate a memory\n",
-    "can't destruct destructed\n",
-    "can't constrict the stack capacity\n",
-    "can't pop an empty stack\n",
-    "spoiled left canary\n",
-    "spoiled right canary\n"
-    "spoiled hash value\n"
+    "Invlid size.\n",
+    "Invalid capacity.\n",
+    "Capacity less than size.\n",
+    "Data is nullptr.\n",
+    "Can't allocate a memory.\n",
+    "Can't destruct destructed.\n",
+    "Can't constrict the stack capacity.\n",
+    "Can't pop an empty stack.\n",
+    "Spoiled left canary.\n",
+    "Spoiled right canary.\n",
+    "Spoiled hash value.\n"
 };
 
 
 AllStackErrors stack_vtor(Stack * stk)
 {
+    stk->hash = calculate_hash(stk);
+
     AllStackErrors verificator = {
-        .invalid_size =           {.expression = (stk->size < 0),                                  .mask = STACKERRORS_INVALID_SIZE},
-        .invalid_capacity =       {.expression = (stk->capacity < 0),                              .mask = STACKERRORS_INVALID_CAPACITY},
-        .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),                     .mask = STACKERRORS_INVALID_SIZECAPACITY},
-        .invalid_data =           {.expression = (stk->data == nullptr),                           .mask = STACKERRORS_INVALID_DATA},
-        .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != JAGAJAGA_VALUE),           .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
-        .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != JAGAJAGA_VALUE),          .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA},
-        .spoiled_hash_value =     {.expression = (stk->hash != (stk->hash = calculate_hash(stk))), .mask = STACKERRORS_SPOILED_HASH_VALUE}
+        .invalid_size =           {.expression = (stk->size < 0),                         .mask = STACKERRORS_INVALID_SIZE},
+        .invalid_capacity =       {.expression = (stk->capacity < 0),                     .mask = STACKERRORS_INVALID_CAPACITY},
+        .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),            .mask = STACKERRORS_INVALID_SIZECAPACITY},
+        .invalid_data =           {.expression = (stk->data == nullptr),                  .mask = STACKERRORS_INVALID_DATA},
+        .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != JAGAJAGA_VALUE),  .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
+        .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != JAGAJAGA_VALUE), .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA},
+        .spoiled_hash_value =     {.expression = (stk->hash != HASH_VALUE),                    .mask = STACKERRORS_SPOILED_HASH_VALUE}
     };
 
     StackError * stack_errors[] = {&(verificator.invalid_size),          &(verificator.invalid_capacity),

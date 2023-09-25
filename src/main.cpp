@@ -46,5 +46,3 @@ int main(void)
 
 
 // TASKS: -DNCANARYPROTECT
-//        HASH
-//        -DNHASHPROTECT

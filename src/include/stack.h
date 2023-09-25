@@ -82,12 +82,15 @@
     Elem_t * const POISON_PTR = NULL;
     const Jagajaga_t JAGAJAGA_VALUE = 0xAB00B1E;
 
+    extern Hash_t HASH_VALUE;
+
     AllStackErrors stack_ctor(Stack * stk);
     AllStackErrors stack_dtor(Stack * stk);
     AllStackErrors stack_push(Stack * stk, const Elem_t value);
     AllStackErrors stack_pop (Stack * stl, Elem_t * value);
     int expand_memory(Stack * stk);
     int constrict_memory(Stack * stk);
+    Hash_t calculate_hash(Stack * stk);
 
 #endif // STACK_H
 
