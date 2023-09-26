@@ -17,44 +17,31 @@ int main(int argc, char * argv[])
 
     AllStackErrors errors = {};
 
-    STACK_CTOR(&stk, &errors);
+    if ((errors = stack_ctor(&stk)).error_code)
+    {
+        show_dump(&stk, &errors);
+
+        return errors.error_code;
+    }
+    else
+    {
+        printf("The stack successfully constructed,\n");
+    }
 
     show_stack_menu();
 
-    int choice = 0;
-    Elem_t inputed_value = 0;
-    Elem_t value = 0;
+   errors = process_stack(&stk);
 
-    while ((choice = get_stack_choice()) != EOF)
+    if ((errors = stack_dtor(&stk)).error_code)
     {
-        switch (choice)
-        {
-            case 'p':
-                if (fscanf(INPUT_FILE, ELEM_SPEC, &inputed_value) != 1)
-                    continue;
+        show_dump(&stk, &errors);
 
-                STACK_PUSH(&stk, inputed_value, &errors);
-
-                SHOW_DUMP(&stk, &errors);
-
-                break;
-
-            case 't':
-                STACK_POP(&stk, &value, &errors);
-
-                SHOW_DUMP(&stk, &errors);
-
-                printf("Taken value: " ELEM_SPEC "\n", value);
-
-                break;
-
-            default:
-                MY_ASSERT(0 && "UNREACHED");
-                break;
-        }
+        return errors.error_code;
     }
-
-    STACK_DTOR(&stk, &errors);
+    else
+    {
+        printf("The stack successfully destructed.\n");
+    }
 
     return 0;
 }

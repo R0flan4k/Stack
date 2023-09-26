@@ -25,13 +25,13 @@ const char * OUTPUT_ERRORS[] = {
 AllStackErrors stack_vtor(const Stack * stk)
 {
     AllStackErrors verificator = {
-        .invalid_size =           {.expression = (stk->size < 0),                         .mask = STACKERRORS_INVALID_SIZE},
-        .invalid_capacity =       {.expression = (stk->capacity < 0),                     .mask = STACKERRORS_INVALID_CAPACITY},
-        .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),            .mask = STACKERRORS_INVALID_SIZECAPACITY},
-        .invalid_data =           {.expression = (stk->data == nullptr),                  .mask = STACKERRORS_INVALID_DATA},
-        .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != JAGAJAGA_VALUE),  .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
-        .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != JAGAJAGA_VALUE), .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA},
-        .spoiled_hash_value =     {.expression = (stk->hash != HASH_VALUE),               .mask = STACKERRORS_SPOILED_HASH_VALUE}
+        .invalid_size =           {.expression = (stk->size < 0),                               .mask = STACKERRORS_INVALID_SIZE},
+        .invalid_capacity =       {.expression = (stk->capacity < 0),                           .mask = STACKERRORS_INVALID_CAPACITY},
+        .invalid_sizecapacity =   {.expression = (stk->size >= stk->capacity),                  .mask = STACKERRORS_INVALID_SIZECAPACITY},
+        .invalid_data =           {.expression = (stk->data == nullptr),                        .mask = STACKERRORS_INVALID_DATA},
+        .spoiled_left_jagajaga =  {.expression = (stk->left_jagajaga != STACK_JAGAJAGA_VALUE),  .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA},
+        .spoiled_right_jagajaga = {.expression = (stk->right_jagajaga != STACK_JAGAJAGA_VALUE), .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA},
+        .spoiled_hash_value =     {.expression = (stk->hash != HASH_VALUE),                     .mask = STACKERRORS_SPOILED_HASH_VALUE}
     };
 
     StackError * stack_errors[] = {&(verificator.invalid_size),          &(verificator.invalid_capacity),
@@ -56,14 +56,15 @@ AllStackErrors stack_vtor(const Stack * stk)
 }
 
 
-void show_dump(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file)
+void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file)
 {
     printf("-------------------------------------------------------------------\n");
     printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
     printf("{\n");
-    printf("    size =     %d%s\n", stk->size,     stk->size == POISON     ? "(POISON)" : "");
-    printf("    capacity = %d%s\n", stk->capacity, stk->capacity == POISON ? "(POISON)" : "");
-    printf("    data[%p%s]\n", stk->data,          stk->data == POISON_PTR ? "(POISON)" : "");
+    printf("    size =     %d%s\n", stk->size,     stk->size == STACK_POISON     ? "(POISON)" : "");
+    printf("    capacity = %d%s\n", stk->capacity, stk->capacity == STACK_POISON ? "(POISON)" : "");
+    printf("    hash =     %lld%s\n", stk->hash,       stk->hash == STACK_POISON   ? "(POISON)" : "");
+    printf("    data[%p%s]\n", stk->data,          stk->data == STACK_POISON_PTR ? "(POISON)" : "");
     printf("    {\n");
 
     int i = 1;

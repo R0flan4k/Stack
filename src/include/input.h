@@ -1,7 +1,9 @@
 #ifndef INPUT_H
     #define INPUT_H
 
-    int get_stack_choice(void);
+    #include "stack.h"
+
     void show_stack_menu(void);
+    AllStackErrors process_stack(Stack * stk);
 
 #endif // INPUT_H

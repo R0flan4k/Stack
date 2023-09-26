@@ -1,27 +1,30 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "stack.h"
 
 #ifndef NHASHPOTECTION
 
-    Hash_t calculate_hash(Stack * stk)
+    Hash_t calculate_hash(Stack * stk, const size_t size)
     {
-        Hash_t data_hash = 0;
-        int i = 0;
+        char * pointer = (char *) stk;
+        char * end_pointer = (char *) stk + size - 1;
+        Hash_t hash = 0;
+        double value = 2;
 
-        while (i < (int) (stk->size * sizeof(Elem_t) - 1))
+        while (pointer < end_pointer)
         {
-            data_hash += ((char *) stk->data)[i] * ((char *) stk->data)[i + 1];
+            hash += (Hash_t) (pow(value, (double) (end_pointer - pointer)) * (*pointer));
 
-            i++;
+            pointer++;
         }
 
-        return (stk->size * stk->capacity) + (stk->capacity * data_hash) + ((int) data_hash * stk->size);
+        return hash;
     }
 
 #else // NHASHPROTECTION
 
-    Hash_t calculate_hash(Stack * stk)
+    Hash_t calculate_hash(Stack * stk, const size_t size)
     {
         return (Hash_t) 0;
     }

@@ -6,6 +6,8 @@
 #include "my_assert.h"
 #include "stack.h"
 
+static void set_flag_stack_push(void);
+
 Elem_t PUSH_NUMBER = 10.2;
 
 FILE * INPUT_FILE = stdin;
@@ -56,7 +58,7 @@ bool check_cmd_input(int argc, char * * argv)
 }
 
 
-void set_flag_stack_push(void)
+static void set_flag_stack_push(void)
 {
     PUSH_NUMBER = atof(cmd_input[STACK_PUSH.argc_number + 1]);
 }
