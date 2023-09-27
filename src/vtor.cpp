@@ -58,12 +58,12 @@ AllStackErrors stack_vtor(const Stack * stk)
         },
 
         .spoiled_data_left_jagajaga = {
-            .expression = (*((Jagajaga_t *) stk->data - 1) != STACK_JAGAJAGA_VALUE),
+            .expression = (*get_data_left_jagajaga(stk) != STACK_JAGAJAGA_VALUE),
             .mask = STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA
         },
 
         .spoiled_data_right_jagajaga = {
-            .expression = (*((Jagajaga_t *) (stk->data + stk->capacity)) != STACK_JAGAJAGA_VALUE),
+            .expression = (*get_data_right_jagajaga(stk) != STACK_JAGAJAGA_VALUE),
             .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA
         },
 
@@ -73,11 +73,13 @@ AllStackErrors stack_vtor(const Stack * stk)
         }
     };
 
-    StackError * stack_errors[] = {&(verificator.invalid_size),               &(verificator.invalid_capacity),
-                                   &(verificator.invalid_sizecapacity),       &(verificator.invalid_data),
-                                   &(verificator.spoiled_left_jagajaga),      &(verificator.spoiled_data_right_jagajaga),
-                                   &(verificator.spoiled_data_left_jagajaga), &(verificator.spoiled_right_jagajaga),
-                                   &(verificator.spoiled_hash_value)};
+    StackError * stack_errors[] = {
+        &(verificator.invalid_size),               &(verificator.invalid_capacity),
+        &(verificator.invalid_sizecapacity),       &(verificator.invalid_data),
+        &(verificator.spoiled_left_jagajaga),      &(verificator.spoiled_data_right_jagajaga),
+        &(verificator.spoiled_data_left_jagajaga), &(verificator.spoiled_right_jagajaga),
+        &(verificator.spoiled_hash_value)
+    };
 
     size_t array_size = sizeof(stack_errors) / sizeof(stack_errors[0]);
     size_t i = 0;
@@ -102,12 +104,23 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
     printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
     printf("{\n");
 
-    printf("    hash =         %lld%s\n", stk->hash,     stk->hash == STACK_POISON    ? "(POISON)" : "");
-    printf("    left canary =  %s%s\n",   stk->left_jagajaga == STACK_JAGAJAGA_VALUE  ? "verified" : "spoiled", stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
-    printf("    right canary = %s%s\n",   stk->right_jagajaga == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled", stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
+    printf("    hash =              %lld%s\n",
+                stk->hash,     stk->hash == STACK_POISON    ? "(POISON)" : "");
+    printf("    left canary =       %s%s\n",
+                stk->left_jagajaga == STACK_JAGAJAGA_VALUE  ? "verified" : "spoiled",
+                stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
+    printf("    right canary =      %s%s\n",
+                stk->right_jagajaga == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
+                stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
+    printf("    left data canary =  %s%s\n",
+                *get_data_left_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
+                *get_data_left_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
+    printf("    right data canary = %s%s\n",
+                *get_data_right_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
+                *get_data_right_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
 
-    printf("    size =         %d%s\n",   stk->size,     stk->size == STACK_POISON     ? "(POISON)" : "");
-    printf("    capacity =     %d%s\n",   stk->capacity, stk->capacity == STACK_POISON ? "(POISON)" : "");
+    printf("    size =     %d%s\n",   stk->size,     stk->size == STACK_POISON     ? "(POISON)" : "");
+    printf("    capacity = %d%s\n",   stk->capacity, stk->capacity == STACK_POISON ? "(POISON)" : "");
     printf("    data[%p%s]\n",            stk->data,     stk->data == STACK_POISON_PTR ? "(POISON)" : "");
     printf("    {\n");
 
@@ -125,13 +138,15 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
 
     if (verificator->error_code)
     {
-    StackError const * errors[] = {&(verificator->invalid_size),               &(verificator->invalid_capacity),
-                                   &(verificator->invalid_sizecapacity),       &(verificator->invalid_data),
-                                   &(verificator->cant_allocate_memory),       &(verificator->cant_destruct),
-                                   &(verificator->cant_constrict),             &(verificator->empty_stack),
-                                   &(verificator->spoiled_left_jagajaga),      &(verificator->spoiled_right_jagajaga),
-                                   &(verificator->spoiled_data_left_jagajaga), &(verificator->spoiled_data_right_jagajaga),
-                                   &(verificator->spoiled_hash_value)};
+    StackError const * errors[] = {
+        &(verificator->invalid_size),               &(verificator->invalid_capacity),
+        &(verificator->invalid_sizecapacity),       &(verificator->invalid_data),
+        &(verificator->cant_allocate_memory),       &(verificator->cant_destruct),
+        &(verificator->cant_constrict),             &(verificator->empty_stack),
+        &(verificator->spoiled_left_jagajaga),      &(verificator->spoiled_right_jagajaga),
+        &(verificator->spoiled_data_left_jagajaga), &(verificator->spoiled_data_right_jagajaga),
+        &(verificator->spoiled_hash_value)
+    };
 
         printf("Errors:\n");
 

@@ -39,10 +39,10 @@ AllStackErrors stack_ctor(Stack * stk)
         return errors;
     }
 
-    *((Jagajaga_t *) data) = STACK_JAGAJAGA_VALUE;
-    *((Jagajaga_t *) ((Elem_t *) ((Jagajaga_t *) data + 1) + STACK_START_CAPACITY)) = STACK_JAGAJAGA_VALUE;
-
     stk->data = (Elem_t *) ((Jagajaga_t *) data + 1);
+
+    *get_data_left_jagajaga(stk) =  STACK_JAGAJAGA_VALUE;
+    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
     HASH_VALUE = calculate_hash(stk, sizeof(Stack));
     stk->hash = HASH_VALUE;
@@ -69,8 +69,6 @@ AllStackErrors stack_dtor(Stack * stk)
         return errors;
     }
 
-    *((Jagajaga_t *) stk->data - 1) =               STACK_POISON;
-    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_POISON;
     stk->capacity =                                 STACK_POISON;
     stk->size =                                     STACK_POISON;
     stk->hash =                                     STACK_POISON;
@@ -171,12 +169,12 @@ static int stack_expand_memory(Stack * stk)
     if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
         return 1;
 
-    *((Jagajaga_t *) (stk->data + stk->capacity)) = 0;
+    *get_data_right_jagajaga(stk) = 0;
 
     stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity *= STACK_EXPAND_COEFFICIENT;
 
-    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_JAGAJAGA_VALUE;
+    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
     return 0;
 }
@@ -192,7 +190,19 @@ static int stack_constrict_memory(Stack * stk)
     stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity /= STACK_EXPAND_COEFFICIENT;
 
-    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_JAGAJAGA_VALUE;
+    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
     return 0;
+}
+
+
+Jagajaga_t * get_data_left_jagajaga(const Stack * stk)
+{
+    return (Jagajaga_t *) stk->data - 1;
+}
+
+
+Jagajaga_t * get_data_right_jagajaga(const Stack * stk)
+{
+    return (Jagajaga_t *) (stk->data + stk->capacity);
 }

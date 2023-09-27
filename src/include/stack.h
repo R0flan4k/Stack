@@ -73,5 +73,7 @@
     AllStackErrors stack_pop (Stack * stk, Elem_t * value);
     Hash_t calculate_hash(void * stk, const size_t size);
     Hash_t recalculate_hash(Stack * stk, const size_t size);
+    Jagajaga_t * get_data_left_jagajaga(const Stack * stk);
+    Jagajaga_t * get_data_right_jagajaga(const Stack * stk);
 
 #endif // STACK_H
