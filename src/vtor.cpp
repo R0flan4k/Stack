@@ -63,7 +63,7 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
     printf("{\n");
     printf("    size =     %d%s\n", stk->size,     stk->size == STACK_POISON     ? "(POISON)" : "");
     printf("    capacity = %d%s\n", stk->capacity, stk->capacity == STACK_POISON ? "(POISON)" : "");
-    printf("    hash =     %lld%s\n", stk->hash,       stk->hash == STACK_POISON   ? "(POISON)" : "");
+    printf("    hash =     %lld%s\n", stk->hash,   stk->hash == STACK_POISON     ? "(POISON)" : "");
     printf("    data[%p%s]\n", stk->data,          stk->data == STACK_POISON_PTR ? "(POISON)" : "");
     printf("    {\n");
 

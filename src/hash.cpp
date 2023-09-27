@@ -22,9 +22,22 @@
         return hash;
     }
 
+    Hash_t recalculate_hash(Stack * stk, const size_t size)
+    {
+        stk->hash = 0;
+
+        return calculate_hash(stk, size);
+    }
+
 #else // NHASHPROTECTION
 
     Hash_t calculate_hash(Stack * stk, const size_t size)
+    {
+        return (Hash_t) 0;
+    }
+
+
+    Hash_t recalculate_hash(Stack * stk, const size_t size)
     {
         return (Hash_t) 0;
     }

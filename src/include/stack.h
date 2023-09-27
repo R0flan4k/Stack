@@ -54,8 +54,8 @@
         Jagajaga_t right_jagajaga;
     };
 
-    const int STACK_START_CAPACITY = 16; ///////////////
-    const int STACK_POISON = 0x5051EB10; // hexspeak
+    const int STACK_START_CAPACITY = 16;
+    const int STACK_POISON = 0x70FEEFEE;
     const int STACK_EXPAND_COEFFICIENT = 2;
     const int STACK_CONSTRICT_COEFFICIENT = 4;
     Elem_t * const STACK_POISON_PTR = NULL;
@@ -68,7 +68,6 @@
     AllStackErrors stack_push(Stack * stk, const Elem_t value);
     AllStackErrors stack_pop (Stack * stl, Elem_t * value);
     Hash_t calculate_hash(Stack * stk, const size_t size);
+    Hash_t recalculate_hash(Stack * stk, const size_t size);
 
 #endif // STACK_H
-
-// prishel za minutu do konca pari xD
