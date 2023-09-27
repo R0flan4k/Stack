@@ -5,7 +5,7 @@
 
 #ifndef NHASHPOTECTION
 
-    Hash_t calculate_hash(Stack * stk, const size_t size)
+    Hash_t calculate_hash(void * stk, const size_t size)
     {
         char * pointer = (char *) stk;
         char * end_pointer = (char *) stk + size - 1;

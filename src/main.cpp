@@ -30,7 +30,7 @@ int main(int argc, char * argv[])
 
     show_stack_menu();
 
-   errors = process_stack(&stk);
+    errors = process_stack(&stk);
 
     if ((errors = stack_dtor(&stk)).error_code)
     {

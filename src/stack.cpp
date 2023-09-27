@@ -5,8 +5,8 @@
 #include "vtor.h"
 #include "my_assert.h"
 
-static int expand_memory(Stack * stk);
-static int constrict_memory(Stack * stk);
+static int stack_expand_memory(Stack * stk);
+static int stack_constrict_memory(Stack * stk);
 
 
 AllStackErrors stack_ctor(Stack * stk)
@@ -14,7 +14,7 @@ AllStackErrors stack_ctor(Stack * stk)
     Elem_t * data = NULL;
     AllStackErrors errors = {};
 
-    if (!stack_vtor(stk).error_code)
+    if (stk->data != nullptr)
     {
         errors.cant_construct.expression = true;
         errors.error_code |= STACKERRORS_CANT_CONSTRUCT;
@@ -38,6 +38,9 @@ AllStackErrors stack_ctor(Stack * stk)
 
         return errors;
     }
+
+    *((Jagajaga_t *) data) = STACK_JAGAJAGA_VALUE;
+    *((Jagajaga_t *) ((Elem_t *) ((Jagajaga_t *) data + 1) + STACK_START_CAPACITY)) = STACK_JAGAJAGA_VALUE;
 
     stk->data = (Elem_t *) ((Jagajaga_t *) data + 1);
 
@@ -66,9 +69,13 @@ AllStackErrors stack_dtor(Stack * stk)
         return errors;
     }
 
-    stk->capacity = STACK_POISON;
-    stk->size =     STACK_POISON;
-    stk->hash =     STACK_POISON;
+    *((Jagajaga_t *) stk->data - 1) =               STACK_POISON;
+    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_POISON;
+    stk->capacity =                                 STACK_POISON;
+    stk->size =                                     STACK_POISON;
+    stk->hash =                                     STACK_POISON;
+    stk->left_jagajaga =                            STACK_POISON;
+    stk->right_jagajaga =                           STACK_POISON;
 
     free((Jagajaga_t *) stk->data - 1);
     stk->data = nullptr;
@@ -96,7 +103,7 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
     {
         MY_ASSERT(stk->size == stk->capacity);
 
-        if (expand_memory(stk))
+        if (stack_expand_memory(stk))
         {
             errors.cant_allocate_memory.expression = true;
             errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
@@ -135,7 +142,7 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         {
             MY_ASSERT(stk->size == stk->capacity / STACK_CONSTRICT_COEFFICIENT);
 
-            if (constrict_memory(stk))
+            if (stack_constrict_memory(stk))
             {
                 errors.cant_constrict.expression = true;
                 errors.error_code |= STACKERRORS_CANT_CONSTRICT;
@@ -157,21 +164,25 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
 }
 
 
-static int expand_memory(Stack * stk)
+static int stack_expand_memory(Stack * stk)
 {
     Elem_t * pointer = NULL;
 
     if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
         return 1;
 
+    *((Jagajaga_t *) (stk->data + stk->capacity)) = 0;
+
     stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity *= STACK_EXPAND_COEFFICIENT;
+
+    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_JAGAJAGA_VALUE;
 
     return 0;
 }
 
 
-static int constrict_memory(Stack * stk)
+static int stack_constrict_memory(Stack * stk)
 {
     Elem_t * pointer = NULL;
 
@@ -180,6 +191,8 @@ static int constrict_memory(Stack * stk)
 
     stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
     stk->capacity /= STACK_EXPAND_COEFFICIENT;
+
+    *((Jagajaga_t *) (stk->data + stk->capacity)) = STACK_JAGAJAGA_VALUE;
 
     return 0;
 }

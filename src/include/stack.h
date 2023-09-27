@@ -9,18 +9,20 @@
     #define ELEM_SPEC "%lf"
 
     enum StackErrorsMasks {
-        STACKERRORS_INVALID_SIZE =           1 << 0,
-        STACKERRORS_INVALID_CAPACITY =       1 << 1,
-        STACKERRORS_INVALID_SIZECAPACITY =   1 << 2,
-        STACKERRORS_INVALID_DATA =           1 << 3,
-        STACKERRORS_CANT_ALLOCATE_MEMORY =   1 << 4,
-        STACKERRORS_CANT_CONSTRUCT =         1 << 5,
-        STACKERRORS_CANT_DESTRUCT =          1 << 6,
-        STACKERRORS_CANT_CONSTRICT =         1 << 7,
-        STACKERRORS_EMPTY_STACK =            1 << 8,
-        STACKERRORS_SPOILED_LEFT_JAGAJAGA =  1 << 9,
-        STACKERRORS_SPOILED_RIGHT_JAGAJAGA = 1 << 10,
-        STACKERRORS_SPOILED_HASH_VALUE =     1 << 11
+        STACKERRORS_INVALID_SIZE =                1 << 0,
+        STACKERRORS_INVALID_CAPACITY =            1 << 1,
+        STACKERRORS_INVALID_SIZECAPACITY =        1 << 2,
+        STACKERRORS_INVALID_DATA =                1 << 3,
+        STACKERRORS_CANT_ALLOCATE_MEMORY =        1 << 4,
+        STACKERRORS_CANT_CONSTRUCT =              1 << 5,
+        STACKERRORS_CANT_DESTRUCT =               1 << 6,
+        STACKERRORS_CANT_CONSTRICT =              1 << 7,
+        STACKERRORS_EMPTY_STACK =                 1 << 8,
+        STACKERRORS_SPOILED_LEFT_JAGAJAGA =       1 << 9,
+        STACKERRORS_SPOILED_RIGHT_JAGAJAGA =      1 << 10,
+        STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA =  1 << 11,
+        STACKERRORS_SPOILED_DATA_RIGHT_JAGAJAGA = 1 << 12,
+        STACKERRORS_SPOILED_HASH_VALUE =          1 << 13
     };
 
     struct StackError {
@@ -42,6 +44,8 @@
         StackError empty_stack;
         StackError spoiled_left_jagajaga;
         StackError spoiled_right_jagajaga;
+        StackError spoiled_data_left_jagajaga;
+        StackError spoiled_data_right_jagajaga;
         StackError spoiled_hash_value;
     };
 
@@ -66,8 +70,8 @@
     AllStackErrors stack_ctor(Stack * stk);
     AllStackErrors stack_dtor(Stack * stk);
     AllStackErrors stack_push(Stack * stk, const Elem_t value);
-    AllStackErrors stack_pop (Stack * stl, Elem_t * value);
-    Hash_t calculate_hash(Stack * stk, const size_t size);
+    AllStackErrors stack_pop (Stack * stk, Elem_t * value);
+    Hash_t calculate_hash(void * stk, const size_t size);
     Hash_t recalculate_hash(Stack * stk, const size_t size);
 
 #endif // STACK_H
