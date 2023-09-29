@@ -22,7 +22,7 @@ AllStackErrors process_stack(Stack * stk)
 {
     AllStackErrors errors = {};
     int choice = 0;
-    Elem_t inputed_value = 0;
+    Elem_t inputed_value;
     Elem_t value = 0;
 
     while ((choice = get_stack_choice()) != EOF)

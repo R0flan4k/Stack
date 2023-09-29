@@ -148,15 +148,15 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
                 return errors;
             }
         }
+
+        HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
+        stk->hash = HASH_VALUE;
     }
     else
     {
         errors.empty_stack.expression = true;
         errors.error_code |= STACKERRORS_EMPTY_STACK;
     }
-
-    HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
-    stk->hash = HASH_VALUE;
 
     return errors;
 }
