@@ -22,7 +22,8 @@
         STACKERRORS_SPOILED_RIGHT_JAGAJAGA =      1 << 10,
         STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA =  1 << 11,
         STACKERRORS_SPOILED_DATA_RIGHT_JAGAJAGA = 1 << 12,
-        STACKERRORS_SPOILED_HASH_VALUE =          1 << 13
+        STACKERRORS_SPOILED_HASH_VALUE =          1 << 13,
+        STACKERRORS_SPOILED_DATA_HASH_VALUE =     1 << 14
     };
 
     struct StackError {
@@ -47,6 +48,7 @@
         StackError spoiled_data_left_jagajaga;
         StackError spoiled_data_right_jagajaga;
         StackError spoiled_hash_value;
+        StackError spoiled_data_hash_value;
     };
 
     struct Stack {
@@ -55,6 +57,7 @@
         int capacity;
         Elem_t * data;
         Hash_t hash;
+        Hash_t data_hash;
         Jagajaga_t right_jagajaga;
     };
 
@@ -66,6 +69,7 @@
     const Jagajaga_t STACK_JAGAJAGA_VALUE = 0xAB00B1EABCDEF;
 
     extern Hash_t HASH_VALUE;
+    extern Hash_t DATA_HASH_VALUE;
 
     AllStackErrors stack_ctor(Stack * stk);
     AllStackErrors stack_dtor(Stack * stk);

@@ -6,6 +6,7 @@
 #include "my_assert.h"
 
 Hash_t HASH_VALUE = 0;
+Hash_t DATA_HASH_VALUE = 0;
 
 const char * OUTPUT_ERRORS[] = {
     "Invlid size.\n",
@@ -20,7 +21,8 @@ const char * OUTPUT_ERRORS[] = {
     "Spoiled right canary.\n",
     "Spoiled left data canary.\n",
     "Spoiled right data canary.\n",
-    "Spoiled hash value.\n"
+    "Spoiled hash value.\n",
+    "Spoiled data hash value.\n"
 };
 
 
@@ -70,6 +72,11 @@ AllStackErrors stack_vtor(const Stack * stk)
         .spoiled_hash_value = {
             .expression = (stk->hash != HASH_VALUE),
             .mask = STACKERRORS_SPOILED_HASH_VALUE
+        },
+
+        .spoiled_data_hash_value = {
+            .expression = (stk->data_hash != DATA_HASH_VALUE),
+            .mask = STACKERRORS_SPOILED_DATA_HASH_VALUE
         }
     };
 
@@ -78,7 +85,7 @@ AllStackErrors stack_vtor(const Stack * stk)
         &(verificator.invalid_sizecapacity),       &(verificator.invalid_data),
         &(verificator.spoiled_left_jagajaga),      &(verificator.spoiled_data_right_jagajaga),
         &(verificator.spoiled_data_left_jagajaga), &(verificator.spoiled_right_jagajaga),
-        &(verificator.spoiled_hash_value)
+        &(verificator.spoiled_hash_value),         &(verificator.spoiled_data_hash_value)
     };
 
     size_t array_size = sizeof(stack_errors) / sizeof(stack_errors[0]);
@@ -106,6 +113,8 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
 
     printf("    hash =              %lld%s\n",
                 stk->hash,     stk->hash == STACK_POISON    ? "(POISON)" : "");
+    printf("    data hash =         %lld%s\n",
+                stk->data_hash, stk->data_hash == STACK_POISON ? "(POISON)" : "");
     printf("    left canary =       %s%s\n",
                 stk->left_jagajaga == STACK_JAGAJAGA_VALUE  ? "verified" : "spoiled",
                 stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
@@ -145,7 +154,7 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
         &(verificator->cant_constrict),             &(verificator->empty_stack),
         &(verificator->spoiled_left_jagajaga),      &(verificator->spoiled_right_jagajaga),
         &(verificator->spoiled_data_left_jagajaga), &(verificator->spoiled_data_right_jagajaga),
-        &(verificator->spoiled_hash_value)
+        &(verificator->spoiled_hash_value),         &(verificator->spoiled_data_hash_value)
     };
 
         printf("Errors:\n");

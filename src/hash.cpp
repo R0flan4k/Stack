@@ -11,10 +11,11 @@
         char * end_pointer = (char *) stk + size - 1;
         Hash_t hash = 0;
         double value = 2;
+        Hash_t mod = 100000;
 
         while (pointer < end_pointer)
         {
-            hash += (Hash_t) (pow(value, (double) (end_pointer - pointer)) * (*pointer));
+            hash += ((Hash_t) (pow(value, (double) (end_pointer - pointer)) * (*pointer))) % mod;
 
             pointer++;
         }
@@ -25,6 +26,7 @@
     Hash_t recalculate_hash(Stack * stk, const size_t size)
     {
         stk->hash = 0;
+        stk->data_hash = 0;
 
         return calculate_hash(stk, size);
     }

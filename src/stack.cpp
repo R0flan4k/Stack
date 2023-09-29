@@ -45,7 +45,9 @@ AllStackErrors stack_ctor(Stack * stk)
     *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
     HASH_VALUE = calculate_hash(stk, sizeof(Stack));
+    DATA_HASH_VALUE = calculate_hash(stk->data, sizeof(stk->data));
     stk->hash = HASH_VALUE;
+    stk->data_hash = DATA_HASH_VALUE;
     errors = stack_vtor(stk);
 
     if(errors.error_code)
@@ -72,6 +74,7 @@ AllStackErrors stack_dtor(Stack * stk)
     stk->capacity =                                 STACK_POISON;
     stk->size =                                     STACK_POISON;
     stk->hash =                                     STACK_POISON;
+    stk->data_hash =                                STACK_POISON;
     stk->left_jagajaga =                            STACK_POISON;
     stk->right_jagajaga =                           STACK_POISON;
 
@@ -85,6 +88,7 @@ AllStackErrors stack_dtor(Stack * stk)
 AllStackErrors stack_push(Stack * stk, const Elem_t value)
 {
     stk->hash = recalculate_hash(stk, sizeof(Stack));
+    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
 
     AllStackErrors errors = stack_vtor(stk);
 
@@ -113,7 +117,9 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
     stk->data[stk->size] = value;
 
     HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
+    DATA_HASH_VALUE = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
     stk->hash = HASH_VALUE;
+    stk->data_hash = DATA_HASH_VALUE;
 
     return errors;
 }
@@ -122,6 +128,7 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
 AllStackErrors stack_pop(Stack * stk, Elem_t * value)
 {
     stk->hash = recalculate_hash(stk, sizeof(Stack));
+    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
 
     AllStackErrors errors = stack_vtor(stk);
 
@@ -150,7 +157,9 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         }
 
         HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
+        DATA_HASH_VALUE = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
         stk->hash = HASH_VALUE;
+        stk->data_hash = DATA_HASH_VALUE;
     }
     else
     {
@@ -169,9 +178,9 @@ static int stack_expand_memory(Stack * stk)
     if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
         return 1;
 
-    *get_data_right_jagajaga(stk) = 0;
+    *get_data_right_jagajaga(stk) = 0;                   ////// V funkciu
 
-    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
+    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1); ////// Do i need to set to zero reallocated mem?
     stk->capacity *= STACK_EXPAND_COEFFICIENT;
 
     *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
