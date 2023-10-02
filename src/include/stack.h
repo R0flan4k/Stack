@@ -26,29 +26,14 @@
         STACKERRORS_SPOILED_DATA_HASH_VALUE =     1 << 14
     };
 
-    struct StackError {
-        bool expression;
-        StackErrorsMasks mask;
+    enum StackResizes {
+        STACK_EXPAND,
+        STACK_CONSTRICT
     };
 
-    struct AllStackErrors {
-        Error_t error_code;
-
-        StackError invalid_size;
-        StackError invalid_capacity;
-        StackError invalid_sizecapacity;
-        StackError invalid_data;
-        StackError cant_allocate_memory;
-        StackError cant_construct;
-        StackError cant_destruct;
-        StackError cant_constrict;
-        StackError empty_stack;
-        StackError spoiled_left_jagajaga;
-        StackError spoiled_right_jagajaga;
-        StackError spoiled_data_left_jagajaga;
-        StackError spoiled_data_right_jagajaga;
-        StackError spoiled_hash_value;
-        StackError spoiled_data_hash_value;
+    struct StackError {
+        StackErrorsMasks mask;
+        const char * output_error;
     };
 
     struct Stack {
@@ -68,16 +53,15 @@
     Elem_t * const STACK_POISON_PTR = NULL;
     const Jagajaga_t STACK_JAGAJAGA_VALUE = 0xAB00B1EABCDEF;
 
-    extern Hash_t HASH_VALUE;
-    extern Hash_t DATA_HASH_VALUE;
-
-    AllStackErrors stack_ctor(Stack * stk);
-    AllStackErrors stack_dtor(Stack * stk);
-    AllStackErrors stack_push(Stack * stk, const Elem_t value);
-    AllStackErrors stack_pop (Stack * stk, Elem_t * value);
+    Error_t stack_ctor(Stack * stk);
+    Error_t stack_dtor(Stack * stk);
+    Error_t stack_push(Stack * stk, const Elem_t value);
+    Error_t stack_pop (Stack * stk, Elem_t * value);
     Hash_t calculate_hash(void * stk, const size_t size);
-    Hash_t recalculate_hash(Stack * stk, const size_t size);
-    Jagajaga_t * get_data_left_jagajaga(const Stack * stk);
-    Jagajaga_t * get_data_right_jagajaga(const Stack * stk);
+    Hash_t stack_recalculate_hash(Stack * stk, const size_t size);
+    Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk);
+    Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk);
+    Elem_t * stack_data_to_raw(Stack * stk);
+    Elem_t * stack_raw_to_data(void * data);
 
 #endif // STACK_H

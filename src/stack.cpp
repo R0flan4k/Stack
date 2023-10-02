@@ -5,19 +5,17 @@
 #include "vtor.h"
 #include "my_assert.h"
 
-static int stack_expand_memory(Stack * stk);
-static int stack_constrict_memory(Stack * stk);
+static int stack_resize(Stack * stk, StackResizes resize_mode);
 
 
-AllStackErrors stack_ctor(Stack * stk)
+Error_t stack_ctor(Stack * stk)
 {
-    Elem_t * data = NULL;
-    AllStackErrors errors = {};
+    Elem_t * tmp = NULL;
+    Error_t errors = 0;
 
     if (stk->data != nullptr)
     {
-        errors.cant_construct.expression = true;
-        errors.error_code |= STACKERRORS_CANT_CONSTRUCT;
+        errors |= STACKERRORS_CANT_CONSTRUCT;
 
         return errors;
     }
@@ -29,70 +27,61 @@ AllStackErrors stack_ctor(Stack * stk)
     stk->hash = 0;
 
 
-    if ((data = (Elem_t *) calloc(STACK_START_CAPACITY * sizeof(Elem_t) + 2 * sizeof(Jagajaga_t), sizeof(char))) == NULL)
+    if ((tmp = (Elem_t *) calloc(STACK_START_CAPACITY * sizeof(Elem_t) + 2 * sizeof(Jagajaga_t), sizeof(char))) == NULL)
     {
         stk->data = nullptr;
 
-        errors.cant_allocate_memory.expression = true;
-        errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
+        errors |= STACKERRORS_CANT_ALLOCATE_MEMORY;
 
         return errors;
     }
 
-    stk->data = (Elem_t *) ((Jagajaga_t *) data + 1);
+    stk->data = stack_raw_to_data(tmp);
 
-    *get_data_left_jagajaga(stk) =  STACK_JAGAJAGA_VALUE;
-    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
+    *stack_get_data_left_jagajaga(stk) =  STACK_JAGAJAGA_VALUE;
+    *stack_get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
-    HASH_VALUE = calculate_hash(stk, sizeof(Stack));
-    DATA_HASH_VALUE = calculate_hash(stk->data, sizeof(stk->data));
-    stk->hash = HASH_VALUE;
-    stk->data_hash = DATA_HASH_VALUE;
+    stk->hash = calculate_hash(stk, sizeof(Stack));
+    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
     errors = stack_vtor(stk);
-
-    if(errors.error_code)
-    {
-        return errors;
-    }
 
     return errors;
 }
 
 
-AllStackErrors stack_dtor(Stack * stk)
+Error_t stack_dtor(Stack * stk)
 {
-    AllStackErrors errors = {};
+    Error_t errors = 0;
 
     if (stk->data == nullptr && stk->capacity == STACK_POISON && stk->size == STACK_POISON)
     {
-        errors.cant_destruct.expression = true;
-        errors.error_code |= STACKERRORS_CANT_DESTRUCT;
+        errors |= STACKERRORS_CANT_DESTRUCT;
 
         return errors;
     }
 
-    stk->capacity =                                 STACK_POISON;
-    stk->size =                                     STACK_POISON;
-    stk->hash =                                     STACK_POISON;
-    stk->data_hash =                                STACK_POISON;
-    stk->left_jagajaga =                            STACK_POISON;
-    stk->right_jagajaga =                           STACK_POISON;
+    stk->capacity =       STACK_POISON;
+    stk->size =           STACK_POISON;
+    stk->hash =           STACK_POISON;
+    stk->data_hash =      STACK_POISON;
+    stk->left_jagajaga =  STACK_POISON;
+    stk->right_jagajaga = STACK_POISON;
 
-    free((Jagajaga_t *) stk->data - 1);
+    free(stack_data_to_raw(stk));
     stk->data = nullptr;
 
     return errors;
 }
 
 
-AllStackErrors stack_push(Stack * stk, const Elem_t value)
+Error_t stack_push(Stack * stk, const Elem_t value)
 {
-    stk->hash = recalculate_hash(stk, sizeof(Stack));
+    stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
     stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
 
-    AllStackErrors errors = stack_vtor(stk);
+    Error_t errors = stack_vtor(stk);
 
-    if (errors.error_code)
+    if (errors)
     {
         show_dump(stk, &errors);
 
@@ -105,10 +94,9 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
     {
         MY_ASSERT(stk->size == stk->capacity);
 
-        if (stack_expand_memory(stk))
+        if (stack_resize(stk, STACK_EXPAND))
         {
-            errors.cant_allocate_memory.expression = true;
-            errors.error_code |= STACKERRORS_CANT_ALLOCATE_MEMORY;
+            errors |= STACKERRORS_CANT_ALLOCATE_MEMORY;
 
             return errors;
         }
@@ -116,23 +104,18 @@ AllStackErrors stack_push(Stack * stk, const Elem_t value)
 
     stk->data[stk->size] = value;
 
-    HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
-    DATA_HASH_VALUE = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
-    stk->hash = HASH_VALUE;
-    stk->data_hash = DATA_HASH_VALUE;
+    stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
+    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
 
     return errors;
 }
 
 
-AllStackErrors stack_pop(Stack * stk, Elem_t * value)
+Error_t stack_pop(Stack * stk, Elem_t * value)
 {
-    stk->hash = recalculate_hash(stk, sizeof(Stack));
-    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
+    Error_t errors = stack_vtor(stk);
 
-    AllStackErrors errors = stack_vtor(stk);
-
-    if (errors.error_code)
+    if (errors)
     {
         return errors;
     }
@@ -147,71 +130,80 @@ AllStackErrors stack_pop(Stack * stk, Elem_t * value)
         {
             MY_ASSERT(stk->size == stk->capacity / STACK_CONSTRICT_COEFFICIENT);
 
-            if (stack_constrict_memory(stk))
+            if (stack_resize(stk, STACK_CONSTRICT))
             {
-                errors.cant_constrict.expression = true;
-                errors.error_code |= STACKERRORS_CANT_CONSTRICT;
+                errors |= STACKERRORS_CANT_CONSTRICT;
 
                 return errors;
             }
         }
 
-        HASH_VALUE = recalculate_hash(stk, sizeof(Stack));
-        DATA_HASH_VALUE = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
-        stk->hash = HASH_VALUE;
-        stk->data_hash = DATA_HASH_VALUE;
+        stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
+        stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
     }
     else
     {
-        errors.empty_stack.expression = true;
-        errors.error_code |= STACKERRORS_EMPTY_STACK;
+        errors |= STACKERRORS_EMPTY_STACK;
     }
 
     return errors;
 }
 
 
-static int stack_expand_memory(Stack * stk)
+static int stack_resize(Stack * stk, StackResizes resize_mode)
 {
     Elem_t * pointer = NULL;
 
-    if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
-        return 1;
+    if (resize_mode == STACK_EXPAND)
+    {
+        if ((pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
+            return 1;
 
-    *get_data_right_jagajaga(stk) = 0;                   ////// V funkciu
+        *stack_get_data_right_jagajaga(stk) = 0;
+    }
+    else // resize_mode == STACK_CONSTRICT
+    {
+        if ((pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) / STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
+            return 1;
+    }
 
-    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1); ////// Do i need to set to zero reallocated mem?
-    stk->capacity *= STACK_EXPAND_COEFFICIENT;
 
-    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
+    stk->data = stack_raw_to_data(pointer);
+    resize_mode ? (stk->capacity /= STACK_EXPAND_COEFFICIENT) : (stk->capacity *= STACK_EXPAND_COEFFICIENT);
+
+    *stack_get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
 
     return 0;
 }
 
 
-static int stack_constrict_memory(Stack * stk)
+Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
 {
-    Elem_t * pointer = NULL;
-
-    if ((pointer = (Elem_t *) realloc((Jagajaga_t *) stk->data - 1, (stk->capacity * sizeof(Elem_t)) / STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
-        return 1;
-
-    stk->data = (Elem_t *) ((Jagajaga_t *) pointer + 1);
-    stk->capacity /= STACK_EXPAND_COEFFICIENT;
-
-    *get_data_right_jagajaga(stk) = STACK_JAGAJAGA_VALUE;
-
-    return 0;
+    return (stk->data != nullptr ? ((Jagajaga_t *) stk->data - 1) : 0);
 }
 
 
-Jagajaga_t * get_data_left_jagajaga(const Stack * stk)
+Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
 {
-    return (Jagajaga_t *) stk->data - 1;
+    return (stk->data != nullptr ? ((Jagajaga_t *) (stk->data + stk->capacity)) : 0);
 }
 
 
-Jagajaga_t * get_data_right_jagajaga(const Stack * stk)
+Elem_t * stack_data_to_raw(Stack * stk)
 {
-    return (Jagajaga_t *) (stk->data + stk->capacity);
+    #ifndef NCANARYPROTECTION
+        return (Elem_t *) ((Jagajaga_t *) stk->data - 1);
+    #elif
+        return stk->data;
+    #endif // NCANARYPROTECTION
+}
+
+
+Elem_t * stack_raw_to_data(void * data)
+{
+    #ifndef NCANARYPROTECTION
+        return (Elem_t *) ((Jagajaga_t *) data + 1);
+    #elif
+        return stk->data;
+    #endif // NCANARYPROTECTION
 }

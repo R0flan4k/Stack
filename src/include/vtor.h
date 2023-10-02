@@ -8,7 +8,7 @@
 
     #define show_dump(stk, verificator) show_dump_basis((stk), #stk, (verificator), __func__, __LINE__, __FILE__)
 
-    AllStackErrors stack_vtor(const Stack * stk);
-    void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file);
+    Error_t stack_vtor(Stack * const stk);
+    void show_dump_basis(const Stack * stk, const char * stack_name, const Error_t * verificator, const char * func, const int line, const char * file);
 
 #endif // VTOR_H

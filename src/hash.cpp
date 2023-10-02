@@ -7,28 +7,42 @@
 
     Hash_t calculate_hash(void * stk, const size_t size)
     {
-        char * pointer = (char *) stk;
-        char * end_pointer = (char *) stk + size - 1;
-        Hash_t hash = 0;
-        double value = 2;
-        Hash_t mod = 100000;
-
-        while (pointer < end_pointer)
+        if (stk != nullptr)
         {
-            hash += ((Hash_t) (pow(value, (double) (end_pointer - pointer)) * (*pointer))) % mod;
+            char * pointer = (char *) stk;
+            char * end_pointer = (char *) stk + size - 1;
+            Hash_t hash = 0;
+            double value = 2;
+            Hash_t mod = 100000;
 
-            pointer++;
+            while (pointer < end_pointer)
+            {
+                hash += ((Hash_t) (pow(value, (double) (end_pointer - pointer)) * (*pointer))) % mod;
+
+                pointer++;
+            }
+
+            return hash;
         }
-
-        return hash;
+        else
+        {
+            return 0;
+        }
     }
 
-    Hash_t recalculate_hash(Stack * stk, const size_t size)
+    Hash_t stack_recalculate_hash(Stack * stk, const size_t size)
     {
-        stk->hash = 0;
-        stk->data_hash = 0;
+        if (stk != nullptr)
+        {
+            stk->hash = 0;
+            stk->data_hash = 0;
 
-        return calculate_hash(stk, size);
+            return calculate_hash(stk, size);
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 #else // NHASHPROTECTION
@@ -39,7 +53,7 @@
     }
 
 
-    Hash_t recalculate_hash(Stack * stk, const size_t size)
+    Hash_t stack_recalculate_hash(Stack * stk, const size_t size)
     {
         return (Hash_t) 0;
     }

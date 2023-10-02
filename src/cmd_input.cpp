@@ -11,6 +11,7 @@ static void set_flag_stack_push(void);
 Elem_t PUSH_NUMBER = 10.2;
 
 FILE * INPUT_FILE = stdin;
+FILE * OUTPUT_ERROR_FILE = stderr;
 static char * * cmd_input = NULL;
 
 CmdLineArg STACK_PUSH = {

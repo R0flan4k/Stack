@@ -4,108 +4,107 @@
 #include "stack.h"
 #include "vtor.h"
 #include "my_assert.h"
+#include "cmd_input.h"
 
-Hash_t HASH_VALUE = 0;
-Hash_t DATA_HASH_VALUE = 0;
 
-const char * OUTPUT_ERRORS[] = {
-    "Invlid size.\n",
-    "Invalid capacity.\n",
-    "Capacity less than size.\n",
-    "Data is nullptr.\n",
-    "Can't allocate a memory.\n",
-    "Can't destruct destructed.\n",
-    "Can't constrict the stack capacity.\n",
-    "Can't pop an empty stack.\n",
-    "Spoiled left canary.\n",
-    "Spoiled right canary.\n",
-    "Spoiled left data canary.\n",
-    "Spoiled right data canary.\n",
-    "Spoiled hash value.\n",
-    "Spoiled data hash value.\n"
+StackError INVALID_SIZE = {
+    .mask = STACKERRORS_INVALID_SIZE,
+    .output_error = "Invlid size.\n"
+};
+
+StackError INVALID_CAPACITY = {
+    .mask = STACKERRORS_INVALID_CAPACITY,
+    .output_error = "Invlid capacity.\n"
+};
+
+StackError INVALID_SIZECAPACITY = {
+    .mask = STACKERRORS_INVALID_SIZECAPACITY,
+    .output_error = "Capacity less than size.\n"
+};
+
+StackError INVALID_DATA = {
+    .mask = STACKERRORS_INVALID_DATA,
+    .output_error = "Data is nullptr.\n"
+};
+
+StackError CANT_ALLOCATE_MEMORY = {
+    .mask = STACKERRORS_CANT_ALLOCATE_MEMORY,
+    .output_error = "Can't allocate a memory.\n"
+};
+
+StackError CANT_CONSTRUCT = {
+    .mask = STACKERRORS_CANT_CONSTRUCT,
+    .output_error = "Can't construct a constructed stack.\n"
+};
+
+StackError CANT_DESTRUCT = {
+    .mask = STACKERRORS_CANT_DESTRUCT,
+    .output_error = "Can't destruct a destructed stack.\n"
+};
+
+StackError CANT_CONSTRICT = {
+    .mask = STACKERRORS_CANT_CONSTRICT,
+    .output_error = "Can't constrict the stack capacity.\n"
+};
+
+StackError EMPTY_STACK = {
+    .mask = STACKERRORS_EMPTY_STACK,
+    .output_error = "Can't pop an empty stack.\n"
+};
+
+StackError SPOILED_LEFT_JAGAJAGA = {
+    .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA,
+    .output_error = "Spoiled left canary.\n"
+};
+
+StackError SPOILED_RIGHT_JAGAJAGA = {
+    .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA,
+    .output_error = "Spoiled right canary.\n"
+};
+
+StackError SPOILED_DATA_LEFT_JAGAJAGA = {
+    .mask = STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA,
+    .output_error = "Spoiled left data canary.\n"
+};
+
+StackError SPOILED_DATA_RIGHT_JAGAJAGA = {
+    .mask = STACKERRORS_SPOILED_DATA_RIGHT_JAGAJAGA,
+    .output_error = "Spoiled right data canary.\n"
+};
+
+StackError SPOILED_HASH_VALUE = {
+    .mask = STACKERRORS_SPOILED_HASH_VALUE,
+    .output_error = "Spoiled hash value.\n"
+};
+
+StackError SPOILED_DATA_HASH_VALUE = {
+    .mask = STACKERRORS_SPOILED_DATA_HASH_VALUE,
+    .output_error = "Spoiled data hash value.\n"
 };
 
 
-AllStackErrors stack_vtor(const Stack * stk)
+Error_t stack_vtor(Stack * const stk)
 {
-    AllStackErrors verificator = {
-        .invalid_size = {
-            .expression = (stk->size < 0),
-            .mask = STACKERRORS_INVALID_SIZE
-        },
+    Hash_t stack_tmp_hash = stk->hash;
+    Hash_t data_tmp_hash =  stk->data_hash;
+    Error_t verificator = 0;
 
-        .invalid_capacity = {
-            .expression = (stk->capacity < 0),
-            .mask = STACKERRORS_INVALID_CAPACITY
-        },
-
-        .invalid_sizecapacity = {
-            .expression = (stk->size >= stk->capacity),
-            .mask = STACKERRORS_INVALID_SIZECAPACITY
-        },
-
-        .invalid_data = {
-            .expression = (stk->data == nullptr),
-            .mask = STACKERRORS_INVALID_DATA
-        },
-
-        .spoiled_left_jagajaga = {
-            .expression = (stk->left_jagajaga != STACK_JAGAJAGA_VALUE),
-            .mask = STACKERRORS_SPOILED_LEFT_JAGAJAGA
-        },
-
-        .spoiled_right_jagajaga = {
-            .expression = (stk->right_jagajaga != STACK_JAGAJAGA_VALUE),
-            .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA
-        },
-
-        .spoiled_data_left_jagajaga = {
-            .expression = (*get_data_left_jagajaga(stk) != STACK_JAGAJAGA_VALUE),
-            .mask = STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA
-        },
-
-        .spoiled_data_right_jagajaga = {
-            .expression = (*get_data_right_jagajaga(stk) != STACK_JAGAJAGA_VALUE),
-            .mask = STACKERRORS_SPOILED_RIGHT_JAGAJAGA
-        },
-
-        .spoiled_hash_value = {
-            .expression = (stk->hash != HASH_VALUE),
-            .mask = STACKERRORS_SPOILED_HASH_VALUE
-        },
-
-        .spoiled_data_hash_value = {
-            .expression = (stk->data_hash != DATA_HASH_VALUE),
-            .mask = STACKERRORS_SPOILED_DATA_HASH_VALUE
-        }
-    };
-
-    StackError * stack_errors[] = {
-        &(verificator.invalid_size),               &(verificator.invalid_capacity),
-        &(verificator.invalid_sizecapacity),       &(verificator.invalid_data),
-        &(verificator.spoiled_left_jagajaga),      &(verificator.spoiled_data_right_jagajaga),
-        &(verificator.spoiled_data_left_jagajaga), &(verificator.spoiled_right_jagajaga),
-        &(verificator.spoiled_hash_value),         &(verificator.spoiled_data_hash_value)
-    };
-
-    size_t array_size = sizeof(stack_errors) / sizeof(stack_errors[0]);
-    size_t i = 0;
-
-    while (i < array_size)
-    {
-        if (stack_errors[i]->expression)
-            verificator.error_code |= stack_errors[i]->mask;
-
-        i++;
-    }
-
-    // HASH_VALUE = stk->hash;
+    if (stk->size < 0)              verificator |= STACKERRORS_INVALID_SIZE;
+    if (stk->capacity < 0)          verificator |= STACKERRORS_INVALID_CAPACITY;
+    if (stk->size >= stk->capacity) verificator |= STACKERRORS_INVALID_SIZECAPACITY;
+    if (stk->data == nullptr)       verificator |= STACKERRORS_INVALID_DATA;
+    if (stk->left_jagajaga != STACK_JAGAJAGA_VALUE)            verificator |= STACKERRORS_SPOILED_LEFT_JAGAJAGA;
+    if (stk->right_jagajaga != STACK_JAGAJAGA_VALUE)           verificator |= STACKERRORS_SPOILED_RIGHT_JAGAJAGA;
+    if (*stack_get_data_left_jagajaga(stk) != STACK_JAGAJAGA_VALUE)  verificator |= STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA;
+    if (*stack_get_data_right_jagajaga(stk) != STACK_JAGAJAGA_VALUE) verificator |= STACKERRORS_SPOILED_DATA_RIGHT_JAGAJAGA;
+    if (stack_tmp_hash != stack_recalculate_hash(stk, sizeof(Stack)))                      verificator |= STACKERRORS_SPOILED_HASH_VALUE;
+    if (data_tmp_hash != calculate_hash(stk->data, stk->capacity *  sizeof(Elem_t))) verificator |= STACKERRORS_SPOILED_DATA_HASH_VALUE;
 
     return verificator;
 }
 
 
-void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackErrors * verificator, const char * func, const int line, const char * file)
+void show_dump_basis(const Stack * stk, const char * stack_name, const Error_t * verificator, const char * func, const int line, const char * file)
 {
     printf("-------------------------------------------------------------------\n");
     printf("Stack[%p] \"%s\" from %s(%d), %s\n", stk, stack_name, file, line, func);
@@ -121,16 +120,20 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
     printf("    right canary =      %s%s\n",
                 stk->right_jagajaga == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
                 stk->left_jagajaga == STACK_POISON ? "(POISON)" : "");
+
+    if (stk->data != nullptr)
+    {
     printf("    left data canary =  %s%s\n",
-                *get_data_left_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
-                *get_data_left_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
+                *stack_get_data_left_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
+                *stack_get_data_left_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
     printf("    right data canary = %s%s\n",
-                *get_data_right_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
-                *get_data_right_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
+                *stack_get_data_right_jagajaga(stk) == STACK_JAGAJAGA_VALUE ? "verified" : "spoiled",
+                *stack_get_data_right_jagajaga(stk) == STACK_POISON ? "(POISON)" : "");
+    }
 
     printf("    size =     %d%s\n",   stk->size,     stk->size == STACK_POISON     ? "(POISON)" : "");
     printf("    capacity = %d%s\n",   stk->capacity, stk->capacity == STACK_POISON ? "(POISON)" : "");
-    printf("    data[%p%s]\n",            stk->data,     stk->data == STACK_POISON_PTR ? "(POISON)" : "");
+    printf("    data[%p%s]\n",        stk->data,     stk->data == STACK_POISON_PTR ? "(POISON)" : "");
     printf("    {\n");
 
     int i = 1;
@@ -145,29 +148,28 @@ void show_dump_basis(const Stack * stk, const char * stack_name, const AllStackE
     printf("    }\n");
     printf("}\n");
 
-    if (verificator->error_code)
+    if (*verificator)
     {
-    StackError const * errors[] = {
-        &(verificator->invalid_size),               &(verificator->invalid_capacity),
-        &(verificator->invalid_sizecapacity),       &(verificator->invalid_data),
-        &(verificator->cant_allocate_memory),       &(verificator->cant_destruct),
-        &(verificator->cant_constrict),             &(verificator->empty_stack),
-        &(verificator->spoiled_left_jagajaga),      &(verificator->spoiled_right_jagajaga),
-        &(verificator->spoiled_data_left_jagajaga), &(verificator->spoiled_data_right_jagajaga),
-        &(verificator->spoiled_hash_value),         &(verificator->spoiled_data_hash_value)
-    };
+        StackError const * errors[] = {
+            &(INVALID_SIZE),               &(INVALID_CAPACITY),
+            &(INVALID_SIZECAPACITY),       &(INVALID_DATA),
+            &(CANT_ALLOCATE_MEMORY),       &(CANT_DESTRUCT),
+            &(CANT_CONSTRICT),             &(EMPTY_STACK),
+            &(SPOILED_LEFT_JAGAJAGA),      &(SPOILED_RIGHT_JAGAJAGA),
+            &(SPOILED_DATA_LEFT_JAGAJAGA), &(SPOILED_DATA_RIGHT_JAGAJAGA),
+            &(SPOILED_HASH_VALUE),         &(SPOILED_DATA_HASH_VALUE),
+            &(CANT_CONSTRUCT)
+        };
 
         printf("Errors:\n");
 
         size_t array_size = sizeof(errors) / sizeof(errors[0]);
         size_t j = 0;
 
-        MY_ASSERT(array_size == sizeof(OUTPUT_ERRORS) / sizeof(OUTPUT_ERRORS[0]));
-
         while (j < array_size)
         {
-            if (errors[j]->expression)
-                printf(RED_COLOR "%s" DEFAULT_COLOR, OUTPUT_ERRORS[j]);
+            if (errors[j]->mask & *verificator)
+                fprintf(OUTPUT_ERROR_FILE, RED_COLOR "%s" DEFAULT_COLOR, errors[j]->output_error);
 
             j++;
         }

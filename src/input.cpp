@@ -18,9 +18,9 @@ void show_stack_menu(void)
 }
 
 
-AllStackErrors process_stack(Stack * stk)
+Error_t process_stack(Stack * stk)
 {
-    AllStackErrors errors = {};
+    Error_t errors = 0;
     int choice = 0;
     Elem_t inputed_value = 0;
     Elem_t value = 0;
@@ -33,7 +33,7 @@ AllStackErrors process_stack(Stack * stk)
                 if (fscanf(INPUT_FILE, ELEM_SPEC, &inputed_value) != 1)
                     continue;
 
-                if ((errors = stack_push(stk, inputed_value)).error_code)
+                if ((errors = stack_push(stk, inputed_value)))
                 {
                     show_dump(stk, &errors);
 
@@ -45,7 +45,7 @@ AllStackErrors process_stack(Stack * stk)
                 break;
 
             case 't':
-                if ((errors = stack_pop(stk, &value)).error_code)
+                if ((errors = stack_pop(stk, &value)))
                 {
                     show_dump(stk, &errors);
 

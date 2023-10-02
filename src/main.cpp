@@ -15,13 +15,13 @@ int main(int argc, char * argv[])
 
     Stack stk = {};
 
-    AllStackErrors errors = {};
+    Error_t errors = 0;
 
-    if ((errors = stack_ctor(&stk)).error_code)
+    if ((errors = stack_ctor(&stk)))
     {
         show_dump(&stk, &errors);
 
-        return errors.error_code;
+        return errors;
     }
     else
     {
@@ -32,11 +32,11 @@ int main(int argc, char * argv[])
 
     errors = process_stack(&stk);
 
-    if ((errors = stack_dtor(&stk)).error_code)
+    if ((errors = stack_dtor(&stk)))
     {
         show_dump(&stk, &errors);
 
-        return errors.error_code;
+        return errors;
     }
     else
     {

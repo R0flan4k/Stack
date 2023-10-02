@@ -15,6 +15,7 @@
 
     extern Elem_t PUSH_NUMBER;
     extern FILE * INPUT_FILE;
+    extern FILE * OUTPUT_ERROR_FILE;
 
     bool check_cmd_input(int argc, char * * argv);
 
