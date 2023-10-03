@@ -149,17 +149,17 @@ Error_t stack_pop(Stack * stk, Elem_t * value)
     return errors;
 }
 
-
+       // Error_t
 static int stack_resize(Stack * stk, StackResizes resize_mode)
 {
     Elem_t * pointer = NULL;
 
     if (resize_mode == STACK_EXPAND)
     {
+        *stack_get_data_right_jagajaga(stk) = 0;
+
         if ((pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
             return 1;
-
-        *stack_get_data_right_jagajaga(stk) = 0;
     }
     else // resize_mode == STACK_CONSTRICT
     {
@@ -194,7 +194,7 @@ Elem_t * stack_data_to_raw(Stack * stk)
     #ifndef NCANARYPROTECTION
         return (Elem_t *) ((Jagajaga_t *) stk->data - 1);
     #elif
-        return stk->data;
+        return (Elem_t *) data;
     #endif // NCANARYPROTECTION
 }
 
@@ -204,6 +204,6 @@ Elem_t * stack_raw_to_data(void * data)
     #ifndef NCANARYPROTECTION
         return (Elem_t *) ((Jagajaga_t *) data + 1);
     #elif
-        return stk->data;
+        return (Elem_t) data;
     #endif // NCANARYPROTECTION
 }

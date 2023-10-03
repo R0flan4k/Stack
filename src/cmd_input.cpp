@@ -22,7 +22,6 @@ CmdLineArg STACK_PUSH = {
     .help =          "--push *double number*"
 };
 
-
 bool check_cmd_input(int argc, char * * argv)
 {
     MY_ASSERT(argv != nullptr);

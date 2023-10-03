@@ -8,6 +8,7 @@
 
     #define ELEM_SPEC "%lf"
 
+    // typedef int StackErrors_t;
     enum StackErrorsMasks {
         STACKERRORS_INVALID_SIZE =                1 << 0,
         STACKERRORS_INVALID_CAPACITY =            1 << 1,
@@ -23,7 +24,7 @@
         STACKERRORS_SPOILED_DATA_LEFT_JAGAJAGA =  1 << 11,
         STACKERRORS_SPOILED_DATA_RIGHT_JAGAJAGA = 1 << 12,
         STACKERRORS_SPOILED_HASH_VALUE =          1 << 13,
-        STACKERRORS_SPOILED_DATA_HASH_VALUE =     1 << 14
+        STACKERRORS_SPOILED_DATA_HASH_VALUE =     1 << 14,
     };
 
     enum StackResizes {
@@ -35,6 +36,13 @@
         StackErrorsMasks mask;
         const char * output_error;
     };
+
+// #define ENABLE_CANARY(...)
+// #ifdef NCANARYPROTECTION
+//
+// #else
+//     __VA_ARGS__
+// #endif
 
     struct Stack {
         Jagajaga_t left_jagajaga;

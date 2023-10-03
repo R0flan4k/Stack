@@ -100,6 +100,9 @@ Error_t stack_vtor(Stack * const stk)
     if (stack_tmp_hash != stack_recalculate_hash(stk, sizeof(Stack)))                      verificator |= STACKERRORS_SPOILED_HASH_VALUE;
     if (data_tmp_hash != calculate_hash(stk->data, stk->capacity *  sizeof(Elem_t))) verificator |= STACKERRORS_SPOILED_DATA_HASH_VALUE;
 
+    stk->data_hash = data_tmp_hash;
+    stk->hash = stack_tmp_hash;
+
     return verificator;
 }
 
