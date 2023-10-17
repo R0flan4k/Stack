@@ -10,6 +10,8 @@ static int stack_resize(Stack * stk, StackResizes resize_mode);
 
 Error_t stack_ctor(Stack * stk)
 {
+    MY_ASSERT(stk != nullptr);
+
     Elem_t * tmp = NULL;
     Error_t errors = 0;
 
@@ -51,6 +53,8 @@ Error_t stack_ctor(Stack * stk)
 
 Error_t stack_dtor(Stack * stk)
 {
+    MY_ASSERT(stk != nullptr);
+
     Error_t errors = 0;
 
     if (stk->data == nullptr && stk->capacity == STACK_POISON && stk->size == STACK_POISON)
@@ -76,6 +80,8 @@ Error_t stack_dtor(Stack * stk)
 
 Error_t stack_push(Stack * stk, const Elem_t value)
 {
+    MY_ASSERT(stk != nullptr);
+
     stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
     stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
 
@@ -113,6 +119,9 @@ Error_t stack_push(Stack * stk, const Elem_t value)
 
 Error_t stack_pop(Stack * stk, Elem_t * value)
 {
+    MY_ASSERT(stk != nullptr);
+    MY_ASSERT(value != nullptr);
+
     Error_t errors = stack_vtor(stk);
 
     if (errors)
@@ -152,6 +161,8 @@ Error_t stack_pop(Stack * stk, Elem_t * value)
        // Error_t
 static int stack_resize(Stack * stk, StackResizes resize_mode)
 {
+    MY_ASSERT(stk != nullptr);
+
     Elem_t * pointer = NULL;
 
     if (resize_mode == STACK_EXPAND)
@@ -179,12 +190,16 @@ static int stack_resize(Stack * stk, StackResizes resize_mode)
 
 Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
 {
+    MY_ASSERT(stk != nullptr);
+
     return (stk->data != nullptr ? ((Jagajaga_t *) stk->data - 1) : 0);
 }
 
 
 Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
 {
+    MY_ASSERT(stk != nullptr);
+
     return (stk->data != nullptr ? ((Jagajaga_t *) (stk->data + stk->capacity)) : 0);
 }
 
