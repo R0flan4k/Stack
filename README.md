@@ -1,4 +1,4 @@
-# StringsProcessing
+# Stack
 ![Strings\0Strings\0Strings\0](images/stack.png)
 
 ## Program Purpose
