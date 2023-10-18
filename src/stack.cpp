@@ -7,10 +7,9 @@
 
 static int stack_resize(Stack * stk, StackResizes resize_mode);
 
-
 Error_t stack_ctor(Stack * stk)
 {
-    MY_ASSERT(stk != nullptr);
+    MY_ASSERT(stk);
 
     Elem_t * tmp = NULL;
     Error_t errors = 0;
@@ -53,11 +52,16 @@ Error_t stack_ctor(Stack * stk)
 
 Error_t stack_dtor(Stack * stk)
 {
-    MY_ASSERT(stk != nullptr);
+    MY_ASSERT(stk);
 
     Error_t errors = 0;
 
-    if (stk->data == nullptr && stk->capacity == STACK_POISON && stk->size == STACK_POISON)
+    if ((errors = stack_vtor(stk)))
+    {
+        return errors;
+    }
+
+    if (!stk->data && stk->capacity == STACK_POISON && stk->size == STACK_POISON)
     {
         errors |= STACKERRORS_CANT_DESTRUCT;
 
@@ -80,7 +84,7 @@ Error_t stack_dtor(Stack * stk)
 
 Error_t stack_push(Stack * stk, const Elem_t value)
 {
-    MY_ASSERT(stk != nullptr);
+    MY_ASSERT(stk);
 
     stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
     stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
@@ -119,8 +123,8 @@ Error_t stack_push(Stack * stk, const Elem_t value)
 
 Error_t stack_pop(Stack * stk, Elem_t * value)
 {
-    MY_ASSERT(stk != nullptr);
-    MY_ASSERT(value != nullptr);
+    MY_ASSERT(stk);
+    MY_ASSERT(value);
 
     Error_t errors = stack_vtor(stk);
 
@@ -161,7 +165,7 @@ Error_t stack_pop(Stack * stk, Elem_t * value)
        // Error_t
 static int stack_resize(Stack * stk, StackResizes resize_mode)
 {
-    MY_ASSERT(stk != nullptr);
+    MY_ASSERT(stk);
 
     Elem_t * pointer = NULL;
 
@@ -190,17 +194,13 @@ static int stack_resize(Stack * stk, StackResizes resize_mode)
 
 Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
 {
-    MY_ASSERT(stk != nullptr);
-
-    return (stk->data != nullptr ? ((Jagajaga_t *) stk->data - 1) : 0);
+    return (stk->data ? ((Jagajaga_t *) stk->data - 1) : 0);
 }
 
 
 Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
 {
-    MY_ASSERT(stk != nullptr);
-
-    return (stk->data != nullptr ? ((Jagajaga_t *) (stk->data + stk->capacity)) : 0);
+    return (stk->data ? ((Jagajaga_t *) (stk->data + stk->capacity)) : 0);
 }
 
 

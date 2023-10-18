@@ -4,29 +4,29 @@ IFLAGS = -Iinclude
 OBJECTS = main.o stack.o vtor.o my_assert.o cmd_input.o hash.o input.o
 
 all: $(OBJECTS)
-	$(CC) $(OBJECTS) -o Stack
+	@$(CC) $(OBJECTS) -o Stack
 
 main.o: main.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 stack.o: stack.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 vtor.o: vtor.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 my_assert.o: my_assert.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 cmd_input.o: cmd_input.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 hash.o: hash.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 input.o: input.cpp
-	$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
+	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 clean:
-	rm -f *.o *~ core *~ *.exe
+	@rm -f *.o *~ core *~ *.exe
 
