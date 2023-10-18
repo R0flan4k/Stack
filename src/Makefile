@@ -29,3 +29,4 @@ input.o: input.cpp
 
 clean:
 	rm -f *.o *~ core *~ *.exe
+
