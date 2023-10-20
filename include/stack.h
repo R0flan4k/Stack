@@ -6,9 +6,9 @@
     typedef long long Jagajaga_t;
     typedef long long Hash_t;
 
+    #define show_dump(stk, verificator) show_dump_basis((stk), #stk, (verificator), __func__, __LINE__, __FILE__)
     #define ELEM_SPEC "%lf"
 
-    // typedef int StackErrors_t;
     enum StackErrorsMasks {
         STACKERRORS_INVALID_SIZE =                1 << 0,
         STACKERRORS_INVALID_CAPACITY =            1 << 1,
@@ -27,12 +27,14 @@
         STACKERRORS_SPOILED_DATA_HASH_VALUE =     1 << 14,
     };
 
-// #define ENABLE_CANARY(...)
-// #ifdef NCANARYPROTECTION
-//
-// #else
-//     __VA_ARGS__
-// #endif
+    #if 0
+        #define ENABLE_CANARY(...)
+        #ifdef NCANARYPROTECTION
+
+        #else
+            __VA_ARGS__
+        #endif
+    #endif
 
     struct Stack {
         Jagajaga_t left_jagajaga;
@@ -44,11 +46,6 @@
         Jagajaga_t right_jagajaga;
     };
 
-    const int STACK_START_CAPACITY = 16;
-    const int STACK_POISON = 0x70FEEFEE;
-    Elem_t * const STACK_POISON_PTR = NULL;
-    const Jagajaga_t STACK_JAGAJAGA_VALUE = 0xAB00B1EABCDEF;
-
     Error_t stack_ctor(Stack * stk);
     Error_t stack_dtor(Stack * stk);
     Error_t stack_push(Stack * stk, const Elem_t value);
@@ -58,5 +55,6 @@
     Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk);
     Hash_t calculate_hash(void * stk, const size_t size);
     Hash_t stack_recalculate_hash(Stack * stk, const size_t size);
+    void show_dump_basis(const Stack * stk, const char * stack_name, const Error_t * verificator, const char * func, const int line, const char * file);
 
 #endif // STACK_H

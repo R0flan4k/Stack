@@ -4,7 +4,6 @@
 #include "cmd_input.h"
 #include "input.h"
 #include "stack.h"
-#include "vtor.h"
 #include "my_assert.h"
 
 static int get_stack_choice(void);

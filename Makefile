@@ -3,7 +3,7 @@ FLAGS = -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equa
 IFLAGS = -Iinclude
 SRCDIR = src
 OBJDIR = obj
-OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/stack.o $(OBJDIR)/vtor.o $(OBJDIR)/my_assert.o $(OBJDIR)/cmd_input.o $(OBJDIR)/hash.o $(OBJDIR)/input.o
+OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/stack.o $(OBJDIR)/my_assert.o $(OBJDIR)/cmd_input.o $(OBJDIR)/hash.o $(OBJDIR)/input.o
 
 all: $(OBJECTS)
 	@$(CC) $(OBJECTS) -o Stack
@@ -12,9 +12,6 @@ $(OBJDIR)/main.o: $(SRCDIR)/main.cpp
 	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 $(OBJDIR)/stack.o: $(SRCDIR)/stack.cpp
-	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
-
-$(OBJDIR)/vtor.o: $(SRCDIR)/vtor.cpp
 	@$(CC) $(FLAGS) $(IFLAGS) -c $^  -o $@
 
 $(OBJDIR)/my_assert.o: $(SRCDIR)/my_assert.cpp
