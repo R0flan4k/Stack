@@ -6,6 +6,10 @@
 #include "my_assert.h"
 #include "cmd_input.h"
 
+struct StackError {
+    StackErrorsMasks mask;
+    const char * output_error;
+};
 
 StackError INVALID_SIZE = {
     .mask = STACKERRORS_INVALID_SIZE,

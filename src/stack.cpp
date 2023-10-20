@@ -5,7 +5,18 @@
 #include "vtor.h"
 #include "my_assert.h"
 
+enum StackResizes {
+    STACK_EXPAND,
+    STACK_CONSTRICT
+};
+
 static int stack_resize(Stack * stk, StackResizes resize_mode);
+static Elem_t * stack_data_to_raw(Stack * stk);
+static Elem_t * stack_raw_to_data(void * data);
+
+const int STACK_EXPAND_COEFFICIENT = 2;
+const int STACK_CONSTRICT_COEFFICIENT = 4;
+
 
 Error_t stack_ctor(Stack * stk)
 {
@@ -173,13 +184,19 @@ static int stack_resize(Stack * stk, StackResizes resize_mode)
     {
         *stack_get_data_right_jagajaga(stk) = 0;
 
-        if ((pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
+        if (!(pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) * STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))))
+        {
+            free(stack_data_to_raw(stk));
             return 1;
+        }
     }
     else // resize_mode == STACK_CONSTRICT
     {
-        if ((pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) / STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))) == NULL)
+        if (!(pointer = (Elem_t *) realloc(stack_data_to_raw(stk), (stk->capacity * sizeof(Elem_t)) / STACK_EXPAND_COEFFICIENT + (2 * sizeof(Jagajaga_t)))))
+        {
+            free(stack_data_to_raw(stk));
             return 1;
+        }
     }
 
 
@@ -204,7 +221,7 @@ Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
 }
 
 
-Elem_t * stack_data_to_raw(Stack * stk)
+static Elem_t * stack_data_to_raw(Stack * stk)
 {
     #ifndef NCANARYPROTECTION
         return (Elem_t *) ((Jagajaga_t *) stk->data - 1);
@@ -214,7 +231,7 @@ Elem_t * stack_data_to_raw(Stack * stk)
 }
 
 
-Elem_t * stack_raw_to_data(void * data)
+static Elem_t * stack_raw_to_data(void * data)
 {
     #ifndef NCANARYPROTECTION
         return (Elem_t *) ((Jagajaga_t *) data + 1);
