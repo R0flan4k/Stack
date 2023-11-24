@@ -96,10 +96,10 @@ Error_t stack_dtor(Stack * stk)
 
     stk->capacity =       STACK_POISON;
     stk->size =           STACK_POISON;
-    stk->hash =           STACK_POISON;
-    stk->data_hash =      STACK_POISON;
-    stk->left_jagajaga =  STACK_POISON;
-    stk->right_jagajaga = STACK_POISON;
+    stk->hash =           0;
+    stk->data_hash =      0;
+    stk->left_jagajaga =  0;
+    stk->right_jagajaga = 0;
 
     free(stack_data_to_raw(stk));
     stk->data = nullptr;
