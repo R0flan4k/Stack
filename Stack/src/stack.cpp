@@ -162,8 +162,8 @@ Error_t stack_pop(Stack * stk, Elem_t * value)
 
     if (stk->size > 0)
     {
-        *value = stk->data[stk->size];
-        stk->data[stk->size] = STACK_POISON;
+        *value = stk->data[stk->size - 1];
+        stk->data[stk->size - 1] = STACK_POISON;
         (stk->size)--;
 
         if (stk->size <= stk->capacity / STACK_CONSTRICT_COEFFICIENT && stk->capacity > STACK_START_CAPACITY)

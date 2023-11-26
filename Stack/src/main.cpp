@@ -28,6 +28,11 @@ int main(int argc, char * argv[])
         printf("The stack successfully constructed,\n");
     }
 
+    stack_push(&stk, 228);
+    Elem_t valuue = 0;
+    stack_pop(&stk, &valuue);
+    printf("valuue = %lf\n", valuue);
+
     show_stack_menu();
 
     errors = process_stack(&stk);
