@@ -51,8 +51,6 @@
     Error_t stack_push(Stack * stk, const Elem_t value);
     Error_t stack_pop (Stack * stk, Elem_t * value);
 
-    Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk);
-    Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk);
     Hash_t calculate_hash(void * stk, const size_t size);
     Hash_t stack_recalculate_hash(Stack * stk, const size_t size);
     void show_dump_basis(const Stack * stk, const char * stack_name, const Error_t * verificator, const char * func, const int line, const char * file);

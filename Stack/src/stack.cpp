@@ -24,6 +24,8 @@ static Elem_t * stack_data_to_raw(Stack * stk);
 static Elem_t * stack_raw_to_data(void * data);
 static Error_t stack_vtor(Stack * stk);
 static StackError create_stack_error(StackErrorsMasks error_mask, const char * error_output_info);
+static Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk);
+static Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk);
 
 const int STACK_EXPAND_COEFFICIENT = 2;
 const int STACK_CONSTRICT_COEFFICIENT = 4;
@@ -112,9 +114,6 @@ Error_t stack_push(Stack * stk, const Elem_t value)
 {
     MY_ASSERT(stk);
 
-    stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
-    stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
-
     Error_t errors = stack_vtor(stk);
 
     if (errors)
@@ -139,7 +138,6 @@ Error_t stack_push(Stack * stk, const Elem_t value)
             return errors;
         }
     }
-
 
     stk->hash = stack_recalculate_hash(stk, sizeof(Stack));
     stk->data_hash = calculate_hash(stk->data, stk->capacity * sizeof(Elem_t));
@@ -226,7 +224,7 @@ static int stack_resize(Stack * stk, StackResizes resize_mode)
 }
 
 
-Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
+static Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
 {
     MY_ASSERT(stk->data);
 
@@ -234,7 +232,7 @@ Jagajaga_t * stack_get_data_left_jagajaga(const Stack * stk)
 }
 
 
-Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
+static Jagajaga_t * stack_get_data_right_jagajaga(const Stack * stk)
 {
     MY_ASSERT(stk->data);
 
